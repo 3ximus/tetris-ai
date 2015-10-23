@@ -1,6 +1,6 @@
 # README #
-* Vamos editando à medida que resolvemos o projeto.
-* data limite: 9/11/2015
+* Editar à medida que resolvemos o projeto.
+* Data limite: 9/11/2015
 * Implementar as funções em baixo e definir os tipos Accao,Tabuleiro,Estado e Problema
 
 ## TODO: ##
