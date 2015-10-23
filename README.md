@@ -29,4 +29,4 @@
 ### 2.1.1 Tipo Acção ###
 * cria-accao
 * accao-coluna
-* cacao-peca
+* accao-peca
