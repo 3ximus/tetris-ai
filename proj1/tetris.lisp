@@ -18,12 +18,27 @@
   (rest accao))
 
 ;;; Tipo Tabuleiro ;;;
-(defstruct tabuleiro (linhas 18) (colunas 10))
+(defparameter *LINHAS* 18)
+(defparameter *COLUNAS* 10)
+(defstruct tabuleiro (data NIL))
 
 (defun cria-tabuleiro ()
-  (let* ((tabuleiro (make-tabuleiro))
-         (linhas (tabuleiro-linhas tabuleiro))
-         (colunas (tabuleiro-colunas tabuleiro)))
-    (make-array '(linhas colunas))))
+	(make-tabuleiro :data (make-array (list *LINHAS* *COLUNAS*))))
 
-    
+(defun copia-tabuleiro (tabuleiro)
+	(copy-tabuleiro tabuleiro))
+	
+(defun tabuleiro-preenchido-p (tabuleiro x y)
+	(not (equal (aref (tabuleiro-data tabuleiro) x y) NIL)))
+
+(defun tabuleiro-altura-coluna (tabuleiro coluna)
+	(let ((max 0))
+		(do* ((n (- *LINHAS* 1) (- n 1))) ((or (not (= max 0)) (= n -1)))
+			(if (tabuleiro-preenchido-p tabuleiro n coluna)
+				(setf max n)))
+		max))
+(defun tabuleiro-linha-completa-p (tabuleiro linha)
+	(let ((n 0))
+		(do ((n (+ n 1))) ((or (= n *COLUNAS*) (equal (tabuleiro-preenchido-p tabuleiro linha n) NIL))))
+		; NAO FUNCIONA!! aparentemente nao entra no do
+		;(tabuleiro-preenchido-p tabuleiro linha n)))
