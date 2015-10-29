@@ -5,11 +5,6 @@
 
 ## TODO: ##
 ### 2.1.2 Tipo tabuleiro ###
-* cria-tabuleiro
-* copia-tabuleiro
-* tabuleiro-preenchido-p
-* tabuleiro-altura-coluna
-* tabuleiro-linha-completa-p
 * tabuleiro-preenche!
 * tabuleiro-remove-linha!
 * tabuleiro-topo-preenchido
@@ -30,3 +25,10 @@
 * cria-accao
 * accao-coluna
 * accao-peca
+
+### 2.1.2 Tipo tabuleiro ###
+* cria-tabuleiro
+* copia-tabuleiro
+* tabuleiro-preenchido-p
+* tabuleiro-altura-coluna
+* tabuleiro-linha-completa-p
