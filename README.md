@@ -5,7 +5,6 @@
 
 ## TODO: ##
 ### 2.1.2 Tipo tabuleiro ###
-* tabuleiro-preenche!
 * tabuleiro-remove-linha!
 * tabuleiro-topo-preenchido
 * tabuleiros-iguais-p
@@ -32,3 +31,4 @@
 * tabuleiro-preenchido-p
 * tabuleiro-altura-coluna
 * tabuleiro-linha-completa-p
+* tabuleiro-preenche!
