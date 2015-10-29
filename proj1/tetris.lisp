@@ -40,5 +40,23 @@
   
 (defun tabuleiro-linha-completa-p (tabuleiro linha)
   (dotimes (coluna *COLUNAS* t)
-    (when (equal (tabuleiro-preenchido-p tabuleiro linha coluna) nil)
-	(return nil))))
+    (when (equal (tabuleiro-preenchido-p tabuleiro linha coluna) NIL)
+	(return NIL))))
+
+(defun valida-linha (linha)
+  (if (or(> linha (- *LINHAS* 1))(< linha 0))
+      NIL
+    T))
+
+(defun valida-coluna (coluna)
+  (if (or(> coluna (- *COLUNAS* 1))(< coluna 0))
+      NIL
+    T))
+
+;;; O valor de retorno desta funcao nao interessa. 
+;;; Estou a por as posicoes preenchidas com True. 
+;;; Se quiserem mudar para um inteiro fazfavori
+(defun tabuleiro-preenche! (tabuleiro linha coluna)
+  (if (and (valida-linha linha) (valida-coluna coluna))
+      (setf (aref (tabuleiro-data tabuleiro) linha coluna) T)))
+
