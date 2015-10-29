@@ -35,7 +35,7 @@
 	(let ((max 0))
 		(do* ((n (- *LINHAS* 1) (- n 1))) ((or (not (= max 0)) (= n -1)))
 			(if (tabuleiro-preenchido-p tabuleiro n coluna)
-				(setf max n)))
+				(setf max (+ n 1)))
 		max))
 (defun tabuleiro-linha-completa-p (tabuleiro linha)
 	(let ((n 0))
