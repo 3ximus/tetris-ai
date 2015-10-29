@@ -23,22 +23,22 @@
 (defstruct tabuleiro (data NIL))
 
 (defun cria-tabuleiro ()
-	(make-tabuleiro :data (make-array (list *LINHAS* *COLUNAS*))))
+  (make-tabuleiro :data (make-array (list *LINHAS* *COLUNAS*))))
 
 (defun copia-tabuleiro (tabuleiro)
-	(copy-tabuleiro tabuleiro))
+  (copy-tabuleiro tabuleiro))
 	
 (defun tabuleiro-preenchido-p (tabuleiro x y)
-	(not (equal (aref (tabuleiro-data tabuleiro) x y) NIL)))
+  (not (equal (aref (tabuleiro-data tabuleiro) x y) NIL)))
 
 (defun tabuleiro-altura-coluna (tabuleiro coluna)
-	(let ((max 0))
-		(do* ((n (- *LINHAS* 1) (- n 1))) ((or (not (= max 0)) (= n -1)))
-			(if (tabuleiro-preenchido-p tabuleiro n coluna)
-				(setf max (+ n 1)))
-		max))
+  (let ((max 0))
+    (do* ((n (- *LINHAS* 1) (- n 1))) ((or (not (= max 0)) (= n -1)))
+      (if (tabuleiro-preenchido-p tabuleiro n coluna)
+          (setf max (+ n 1)))
+      max)))
+  
 (defun tabuleiro-linha-completa-p (tabuleiro linha)
-	(let ((n 0))
-		(do ((n (+ n 1))) ((or (= n *COLUNAS*) (equal (tabuleiro-preenchido-p tabuleiro linha n) NIL))))
-		; NAO FUNCIONA!! aparentemente nao entra no do
-		;(tabuleiro-preenchido-p tabuleiro linha n)))
+  (dotimes (coluna *COLUNAS* t)
+    (when (equal (tabuleiro-preenchido-p tabuleiro linha coluna) nil)
+	(return nil))))
