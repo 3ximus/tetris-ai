@@ -4,13 +4,6 @@
 * Implementar as funções em baixo e definir os tipos Accao,Tabuleiro,Estado e Problema
 
 ## TODO: ##
-### 2.1.2 Tipo tabuleiro ###
-* tabuleiro-remove-linha!
-* tabuleiro-topo-preenchido
-* tabuleiros-iguais-p
-* tabuleiro->array
-* array->tabuleiro
-
 ### 2.1.3 Tipo Estado ###
 * copia-estado
 * estados-iguais-p
@@ -32,3 +25,8 @@
 * tabuleiro-altura-coluna
 * tabuleiro-linha-completa-p
 * tabuleiro-preenche!
+* tabuleiro-remove-linha!
+* tabuleiro-topo-preenchido
+* tabuleiros-iguais-p
+* tabuleiro->array
+* array->tabuleiro
