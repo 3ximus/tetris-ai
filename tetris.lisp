@@ -37,8 +37,8 @@
   (let ((max 0))
     (do* ((n (- *LINHAS* 1) (- n 1))) ((or (not (= max 0)) (= n -1)))
       (if (tabuleiro-preenchido-p tabuleiro n coluna)
-          (setf max (+ n 1)))
-      max)))
+          (setf max (+ n 1))))
+      max))
   
 (defun tabuleiro-linha-completa-p (tabuleiro linha)
   (dotimes (coluna *COLUNAS* t)
@@ -62,5 +62,44 @@
   (if (and (valida-linha linha) (valida-coluna coluna))
       (setf (aref (tabuleiro-data tabuleiro) linha coluna) T)))
 
+;;;
+;;; Remove linha de um tabuleiro, movendo as seguintes para a posicao anterior
+;;;
+(defun tabuleiro-remove-linha! (tab linha)
+  (do ((n linha (+ n 1))) ((= n (- *LINHAS* 1)))
+    (dotimes (coluna *COLUNAS* T)
+      (setf (aref (tabuleiro-data tab) n coluna) (aref (tabuleiro-data tab) (+ n 1) coluna))))
+  (tabuleiro-linha-vazia tab (- *LINHAS* 1)))
 
-(format t "Starting...")
+;;;
+;;; Coloca linha indicada vazia
+;;;
+(defun tabuleiro-linha-vazia (tab linha)
+  (dotimes (coluna *COLUNAS* T)
+      (setf (aref (tabuleiro-data tab) linha coluna) NIL)))
+
+;;;
+;;; Devolve verdade se existir alguma posicao na linha do topo do tabuleiro que esteja preenchida
+;;;
+(defun tabuleiro-topo-preenchido-p (tab)
+  (dotimes (coluna *COLUNAS* NIL)
+    (if(= (tabuleiro-altura-coluna tab coluna) *LINHAS*)
+      (return T))))
+;;;     
+;;; Verifica se 2 tabuleiros sao iguais
+;;;     
+(defun tabuleiros-iguais-p (tab1 tab2)
+  (dotimes (linha *LINHAS* T)
+    (dotimes (coluna *COLUNAS* T)
+      (if (not (equal (aref (tabuleiro-data tab1) linha coluna) (aref (tabuleiro-data tab2) linha coluna)))
+        (return-from tabuleiros-iguais-p NIL)))))
+;;;
+;;; Devolve um novo array que contem o conteudo do tabuleiro
+;;;
+(defun tabuleiro->array (tabuleiro)
+  (setf newArray (tabuleiro-data tabuleiro)))
+;;;
+;;; Cria um novo tabuleiro com conteudo igual como array passado pelo argumento
+;;;
+(defun array->tabuleiro (arrayOfContent)
+  (make-tabuleiro :data arrayOfContent))
