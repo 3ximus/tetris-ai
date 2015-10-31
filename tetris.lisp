@@ -1,3 +1,5 @@
+;#! /opt/acl100express/alisp -#!
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;										 			 		;
 ;				Projeto IA 2015/2016 --- grupo 59	 		;
@@ -60,3 +62,5 @@
   (if (and (valida-linha linha) (valida-coluna coluna))
       (setf (aref (tabuleiro-data tabuleiro) linha coluna) T)))
 
+
+(format t "Starting...")
