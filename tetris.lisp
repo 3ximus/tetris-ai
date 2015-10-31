@@ -7,7 +7,7 @@
 ;										 			 		;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Tipo Accao ;;;
+;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
   (cons coluna peca))
 
@@ -17,7 +17,7 @@
 (defun accao-peca (accao)
   (rest accao))
 
-;;; Tipo Tabuleiro ;;;
+;;; ------------ Tipo Tabuleiro ------------  ;;;
 (defparameter *LINHAS*  18)
 (defparameter *COLUNAS* 10)
 (defstruct tabuleiro (data NIL))
@@ -109,15 +109,19 @@
 ;;; Funcoes auxiliares
 ;;;
 (defun valida-linha (linha)
+  "Testa se linha existe"
   (if (or(> linha (- *LINHAS* 1))(< linha 0))
       NIL
     T))
 
 (defun valida-coluna (coluna)
+  "Testa se coluna existe"
   (if (or(> coluna (- *COLUNAS* 1))(< coluna 0))
       NIL
     T))
-
+;;;
+;;; Faz a copia de um array
+;;;
 (defun copy-array (array &key
                          (element-type (array-element-type array))
                          (fill-pointer (and (array-has-fill-pointer-p array)(fill-pointer array)))
@@ -134,3 +138,6 @@ arguments."
       (setf (row-major-aref new-array i)
             (row-major-aref array i)))
     new-array))
+
+;;; ------------ Tipo Estado ------------  ;;;
+(defstruct estado (pontos 0) (pecas-por-colocar NIL) (pecas-colocadas NIL) (tabuleiro NIL))
