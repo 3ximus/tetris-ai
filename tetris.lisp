@@ -17,7 +17,10 @@
 (defun accao-peca (accao)
   (rest accao))
 
-;;; ------------ Tipo Tabuleiro ------------  ;;;
+;;; ------------------------  ;;;
+;;;      Tipo Tabuleiro
+;;; ------------------------  ;;;
+
 (defparameter *LINHAS*  18)
 (defparameter *COLUNAS* 10)
 (defstruct tabuleiro (data NIL))
@@ -139,5 +142,25 @@ arguments."
             (row-major-aref array i)))
     new-array))
 
-;;; ------------ Tipo Estado ------------  ;;;
+;;; ------------------------  ;;;
+;;;      Tipo Estado
+;;; ------------------------  ;;;
 (defstruct estado (pontos 0) (pecas-por-colocar NIL) (pecas-colocadas NIL) (tabuleiro NIL))
+
+; TODO
+
+
+
+;;; ------------------------  ;;;
+;;;      Tipo Problema
+;;; ------------------------  ;;;
+
+; TODO
+
+
+
+;;; ------------------------  ;;;
+;;;    Funcoes de Procura
+;;; ------------------------  ;;;
+
+; TODO
