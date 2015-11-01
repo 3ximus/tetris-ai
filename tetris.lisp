@@ -147,9 +147,21 @@ arguments."
 ;;; ------------------------  ;;;
 (defstruct estado (pontos 0) (pecas-por-colocar NIL) (pecas-colocadas NIL) (tabuleiro NIL))
 
-; TODO
+;;;
+;;; Devolve uma copia de um estado
+;;;
+(defun copia-estado (estado))
 
+;;;
+;;; Verifica se 2 estados sao iguais
+;;;
+(defun estados-iguais-p (estado1 estado2))
 
+;;;
+;;; Verifica se este estado corresponde ao estado final de um jogo
+;;; Isto é se ja nao existirem pecas por colocar ou o tabuleiro atingir o topo
+;;;
+(defun estado-final-p (estado))
 
 ;;; ------------------------  ;;;
 ;;;      Tipo Problema
