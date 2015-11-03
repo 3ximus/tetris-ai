@@ -145,23 +145,34 @@ arguments."
 ;;; ------------------------  ;;;
 ;;;      Tipo Estado
 ;;; ------------------------  ;;;
-(defstruct estado (pontos 0) (pecas-por-colocar NIL) (pecas-colocadas NIL) (tabuleiro NIL))
+(defstruct estado (pontos 0) (pecas-por-colocar nil) (pecas-colocadas nil) (tabuleiro (cria-tabuleiro)))
 
 ;;;
 ;;; Devolve uma copia de um estado
 ;;;
-(defun copia-estado (estado))
+(defun copia-estado (estado)
+  (copy-estado estado))
 
 ;;;
 ;;; Verifica se 2 estados sao iguais
 ;;;
-(defun estados-iguais-p (estado1 estado2))
+(defun estados-iguais-p (estado-incial estado-final)
+  (if (and (= (estado-pontos estado-incial) (estado-pontos estado-final))
+           (equal (estado-pecas-por-colocar estado-incial) (estado-pecas-por-colocar estado-final))
+           (equal (estado-pecas-colocadas estado-incial) (estado-pecas-colocadas estado-final))
+           (tabuleiros-iguais-p (estado-tabuleiro estado-incial) (estado-tabuleiro estado-final)))
+    t
+    nil))
 
 ;;;
 ;;; Verifica se este estado corresponde ao estado final de um jogo
 ;;; Isto é se ja nao existirem pecas por colocar ou o tabuleiro atingir o topo
 ;;;
-(defun estado-final-p (estado))
+(defun estado-final-p (estado)
+  (if (or (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
+          (null (estado-pecas-por-colocar estado)))
+    t
+    nil))
 
 ;;; ------------------------  ;;;
 ;;;      Tipo Problema
