@@ -127,7 +127,7 @@
 ;;;
 (defun copia-array (array)
   (let* ((dimensions (array-dimensions array))
-         (new-array (make-array dimensions
+         (new-array (make-array dimensions)))
     (dotimes (i (array-total-size array))
       (setf (row-major-aref new-array i)
             (row-major-aref array i)))
