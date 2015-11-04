@@ -249,17 +249,27 @@ arguments."
       (if (> linha-base linha-a-inserir) (setf linha-a-inserir linha-base)))
     (desenha-peca-tabuleiro (estado peca-array linha-a-inserir coluna))))
 
+;;;
+;;; Calcula numero de pontos a somar segundo o numero de linhas dado
+;;; 
+(defun calcula-pontos (contador)
+  (cond ((= contador 1) 100)
+    ((= contador 2) 300)
+    ((= contador 3) 500)
+    ((= contador 4) 800)))
+
 ;;; -----------------------------------------------------------
 ;;; Recebe um estado e uma accao e aplica a accao a esse estado
 ;;; -----------------------------------------------------------
 (defun resultado (estado accao)
-  (let ((novo-estado (copia-estado estado)))
+  (let ((novo-estado (copia-estado estado))(cont 0))
     (insere-peca novo-estado (rest accao) (first accao))
     (if ((equal (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL) novo-estado)
       (dotimes (linha (- *LINHAS* 1))
         (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
           (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
-          (- linha 1))))))
+          (- linha 1)(+ cont 1)))
+      (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont))))))
 
 
 ;;; ------------------------
