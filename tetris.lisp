@@ -169,7 +169,8 @@
 ;;;      Tipo Problema
 ;;; ------------------------  ;;;
 
-; TODO
+(defstruct problema (estado-inicial (make-estado)) (solucao (solucao estado-inicial)) 
+		    (accoes (accoes estado-inicial)) (resultado NIL) (custo-caminho NIL))
 
 
 
