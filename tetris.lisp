@@ -208,16 +208,19 @@ arguments."
 ;;;
 (defun jogada-valida (estado peca-array coluna)
   (let ((linha-base (tabuleiro-altura-coluna estado-tabuleiro coluna)))
-    (if (<= (array-dimension peca-array 1) (- *COLUNAS* coluna))
+    (if (<= (array-dimension peca-array 1) (- (- *COLUNAS* 1) coluna))
       T NIL)))
 
 ;;;
 ;;; Indica se uma accao e valida
 ;;;
 (defun accoes (estado)
-  (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))))
-    (dotimes (coluna *COLUNAS*)
-      (identifica-jogada estado peca rotacao coluna))))
+  (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
+    (cond ((or (= peca 'i)(= peca 's)(= peca 'z)) ((setf max-rotacao 1)))
+      ((or (= peca 'l)(= peca 'j)(= peca 't)) ((setf max-rotacao 3))))
+    (dotimes (rotacao max-rotacao)
+      (dotimes (coluna (- *COLUNAS* 1)
+        (identifica-jogada estado peca rotacao coluna))))))
 
 ;;;
 ;;; Recebe um estado e uma accao e aplica a accao a esse estado
