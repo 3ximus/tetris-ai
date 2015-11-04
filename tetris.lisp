@@ -163,11 +163,11 @@ arguments."
 ;;;    Funcoes de Procura
 ;;; ------------------------  ;;;
 
-;;;
+;;; -----------------------------------------------------------
 ;;; Recebe um estado e indica se este corresponde a uma solucao
-;;;
+;;; -----------------------------------------------------------
 (defun solucao (estado)
-  (if (and (= estado-pecas-por-colocar NIL) (= (tabuleiro-topo-preenchido-p estado-tabuleiro) NIL))
+  (if (and (equal estado-pecas-por-colocar NIL) (equal (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL))
     T NIL))
 
 ;;;
@@ -207,13 +207,13 @@ arguments."
 ;;; Verifica se uma jogada é valida
 ;;;
 (defun jogada-valida (estado peca-array coluna)
-  (let ((linha-base (tabuleiro-altura-coluna estado-tabuleiro coluna)))
+  (let ((linha-base (tabuleiro-altura-coluna (estado-tabuleiro estado) coluna)))
     (if (<= (array-dimension peca-array 1) (- (- *COLUNAS* 1) coluna))
       T NIL)))
 
-;;;
+;;; ------------------------------
 ;;; Indica se uma accao e valida
-;;;
+;;; ------------------------------
 (defun accoes (estado)
   (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
     (cond ((or (= peca 'i)(= peca 's)(= peca 'z)) ((setf max-rotacao 1)))
@@ -223,7 +223,55 @@ arguments."
         (identifica-jogada estado peca rotacao coluna))))))
 
 ;;;
-;;; Recebe um estado e uma accao e aplica a accao a esse estado
+;;; Descobre a base na coluna de uma peca
 ;;;
+(defun base-peca-coluna (peca-array coluna)
+  (dotimes (linha (- (array-dimension peca-array 0) 1))
+    (if (aref peca-array linha coluna)) (return-from base-peca-coluna linha)))
+
+;;;
+;;; Desenha um peca num tabuleiro
+;;;
+(defun desenha-peca-tabuleiro (estado peca-array linha coluna)
+  (dotimes (peca-linha (- (array-dimension peca-array 0) 1))
+    (dotimes (peca-coluna (- (array-dimension peca-array 1) 1))
+      (if (aref peca-array peca-linha peca-coluna) 
+        (setf (aref (estado-tabuleiro estado) (+ linha peca-linha) (+ coluna peca-coluna)))))))
+
+;;;
+;;; Insere uma peca numa posicao
+;;;
+(defun insere-peca (estado peca-array coluna)
+  (let ((linha-base 0)(linha-max 0)(linha-a-inserir 0))
+    (dotimes (peca-coluna (- (array-dimension peca-array 1) 1))
+      (setf linha-max (+ (tabuleiro-altura-coluna (estado-tabuleiro estado) (+ coluna peca-coluna)) 1))
+      (setf linha-base (- linha-max (base-peca-coluna peca-array peca-coluna)))
+      (if (> linha-base linha-a-inserir) (setf linha-a-inserir linha-base)))
+    (desenha-peca-tabuleiro (estado peca-array linha-a-inserir coluna))))
+
+;;; -----------------------------------------------------------
+;;; Recebe um estado e uma accao e aplica a accao a esse estado
+;;; -----------------------------------------------------------
 (defun resultado (estado accao)
+  (let ((novo-estado (copia-estado estado)))
+    (insere-peca novo-estado (rest accao) (first accao))
+    (if ((equal (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL) novo-estado)
+      (dotimes (linha (- *LINHAS* 1))
+        (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
+          (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
+          (- linha 1))))))
+
+
+;;; ------------------------
+;;;
+;;; ------------------------
+(defun qualidade-estado (estado)
   )
+
+
+;;; ------------------------
+;;;
+;;; ------------------------
+(defun custo-oportunidade (estado)
+  )
+  
