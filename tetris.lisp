@@ -1,11 +1,11 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;										 			 		;
-;				Projeto IA 2015/2016 --- grupo 59	 		;
-;					Andre Sobral   nº 69481			 		;
-;					Rui Lourenco   nº 69701			 		;
-;					Fabio Almeida  nº 76959			 		;
-;										 			 		;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	                                                  ;
+;       Projeto IA 2015/2016 --- grupo 59           ;
+;         Andre Sobral   nº 69481                   ;
+;         Rui Lourenco   nº 69701                   ;
+;         Fabio Almeida  nº 76959                   ;
+;                                                   ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
@@ -264,29 +264,51 @@
       (if (> linha-base linha-a-inserir) (setf linha-a-inserir linha-base)))
     (desenha-peca-tabuleiro (estado peca-array linha-a-inserir coluna))))
 
+;;;
+;;; Calcula numero de pontos a somar segundo o numero de linhas dado
+;;; 
+(defun calcula-pontos (contador)
+  (cond ((= contador 1) 100)
+    ((= contador 2) 300)
+    ((= contador 3) 500)
+    ((= contador 4) 800)))
+
 ;;; -----------------------------------------------------------
 ;;; Recebe um estado e uma accao e aplica a accao a esse estado
 ;;; -----------------------------------------------------------
 (defun resultado (estado accao)
-  (let ((novo-estado (copia-estado estado)))
+  (let ((novo-estado (copia-estado estado))(cont 0))
     (insere-peca novo-estado (rest accao) (first accao))
     (if ((equal (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL) novo-estado)
       (dotimes (linha (- *LINHAS* 1))
         (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
           (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
-          (- linha 1))))))
+          (- linha 1)(+ cont 1)))
+      (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont))))))
 
 
 ;;; ------------------------
-;;;
+;;; Devolve o valor de qualidade de um estado que corresponde ao valor negativo dos pontos
 ;;; ------------------------
-(defun qualidade-estado (estado)
-  )
-
+(defun qualidade (estado)
+  (- 0 (estado-pontos estado)))
 
 ;;; ------------------------
-;;;
+;;; Devolve o custo de oportunidade de todas as accoes tomadas ate ao momento
+;;; Ou seja a diferenca entre as pontuacoes maximas possiveis por peca e os pontos obtidos ate ao momento
 ;;; ------------------------
 (defun custo-oportunidade (estado)
-  )
-  
+  (let ((max-pontos 0))
+    (dolist (peca (estado-pecas-colocadas estado))
+      (cond ((= peca 'i) (incf max-pontos 800))
+        ((= peca 'j) (incf max-pontos 500))
+        ((= peca 'l) (incf max-pontos 500))
+        ((= peca 's) (incf max-pontos 300))
+        ((= peca 'z) (incf max-pontos 300))
+        ((= peca 't) (incf max-pontos 300))
+        ((= peca 'o) (incf max-pontos 300))))))
+
+
+;;; ------------------------  ;;;
+;;;         Procuras
+;;; ------------------------  ;;;
