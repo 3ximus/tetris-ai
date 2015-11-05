@@ -29,7 +29,7 @@
   (make-tabuleiro :data (make-array (list *LINHAS* *COLUNAS*))))
 
 (defun copia-tabuleiro (tabuleiro)
-  (copy-tabuleiro tabuleiro))
+  (make-tabuleiro :data (tabuleiro->array tabuleiro)))
 
 ;;;
 ;;; Verifica se a posicao (linha coluna) esta preenchida.
@@ -142,7 +142,9 @@
 ;;; Devolve uma copia de um estado
 ;;;
 (defun copia-estado (estado)
-  (copy-estado estado))
+  (make-estado :pontos (estado-pontos estado) :pecas-por-colocar (copy-list(estado-pecas-por-colocar estado))
+               :pecas-colocadas (copy-list (estado-pecas-colocadas estado)) 
+               :tabuleiro (copia-tabuleiro (estado-tabuleiro estado))))
 
 ;;;
 ;;; Verifica se 2 estados sao iguais
@@ -193,30 +195,30 @@
   (cond 
     ;; peca i
     ((and (= peca 'i)(= rotacao 0)(jogada-valida(estado peca-i0 coluna))) (list (cria-accao coluna peca-i0)))
-    ((and (= peca 'i)(= rotacao 1)(jogada-valida(estado peca-i1 coluna))) (list (cria-accao coluna peca-i1))
+    ((and (= peca 'i)(= rotacao 1)(jogada-valida(estado peca-i1 coluna))) (list (cria-accao coluna peca-i1)))
     ;; peca l
-    ((and (= peca 'l)(= rotacao 0)(jogada-valida(estado peca-l0 coluna))) (list (cria-accao coluna peca-l0))
-    ((and (= peca 'l)(= rotacao 1)(jogada-valida(estado peca-l1 coluna))) (list (cria-accao coluna peca-l1))
-    ((and (= peca 'l)(= rotacao 2)(jogada-valida(estado peca-l2 coluna))) (list (cria-accao coluna peca-l2))
-    ((and (= peca 'l)(= rotacao 3)(jogada-valida(estado peca-l3 coluna))) (list (cria-accao coluna peca-l3))
+    ((and (= peca 'l)(= rotacao 0)(jogada-valida(estado peca-l0 coluna))) (list (cria-accao coluna peca-l0)))
+    ((and (= peca 'l)(= rotacao 1)(jogada-valida(estado peca-l1 coluna))) (list (cria-accao coluna peca-l1)))
+    ((and (= peca 'l)(= rotacao 2)(jogada-valida(estado peca-l2 coluna))) (list (cria-accao coluna peca-l2)))
+    ((and (= peca 'l)(= rotacao 3)(jogada-valida(estado peca-l3 coluna))) (list (cria-accao coluna peca-l3)))
     ;; peca j
-    ((and (= peca 'j)(= rotacao 0)(jogada-valida(estado peca-j0 coluna))) (list (cria-accao coluna peca-j0))
-    ((and (= peca 'j)(= rotacao 1)(jogada-valida(estado peca-j1 coluna))) (list (cria-accao coluna peca-j1))
-    ((and (= peca 'j)(= rotacao 2)(jogada-valida(estado peca-j2 coluna))) (list (cria-accao coluna peca-j2))
-    ((and (= peca 'j)(= rotacao 3)(jogada-valida(estado peca-j3 coluna))) (list (cria-accao coluna peca-j3))
+    ((and (= peca 'j)(= rotacao 0)(jogada-valida(estado peca-j0 coluna))) (list (cria-accao coluna peca-j0)))
+    ((and (= peca 'j)(= rotacao 1)(jogada-valida(estado peca-j1 coluna))) (list (cria-accao coluna peca-j1)))
+    ((and (= peca 'j)(= rotacao 2)(jogada-valida(estado peca-j2 coluna))) (list (cria-accao coluna peca-j2)))
+    ((and (= peca 'j)(= rotacao 3)(jogada-valida(estado peca-j3 coluna))) (list (cria-accao coluna peca-j3)))
     ;; peca o
-    ((and (= peca 'o)(= rotacao 0)(jogada-valida(estado peca-o0 coluna))) (list (cria-accao coluna peca-o0))
+    ((and (= peca 'o)(= rotacao 0)(jogada-valida(estado peca-o0 coluna))) (list (cria-accao coluna peca-o0)))
     ;; peca s
-    ((and (= peca 's)(= rotacao 0)(jogada-valida(estado peca-s0 coluna))) (list (cria-accao coluna peca-s0))
-    ((and (= peca 's)(= rotacao 1)(jogada-valida(estado peca-s1 coluna))) (list (cria-accao coluna peca-s1))
+    ((and (= peca 's)(= rotacao 0)(jogada-valida(estado peca-s0 coluna))) (list (cria-accao coluna peca-s0)))
+    ((and (= peca 's)(= rotacao 1)(jogada-valida(estado peca-s1 coluna))) (list (cria-accao coluna peca-s1)))
     ;; peca z
-    ((and (= peca 'z)(= rotacao 0)(jogada-valida(estado peca-z0 coluna))) (list (cria-accao coluna peca-z0))
-    ((and (= peca 'z)(= rotacao 1)(jogada-valida(estado peca-z1 coluna))) (list (cria-accao coluna peca-z1))
+    ((and (= peca 'z)(= rotacao 0)(jogada-valida(estado peca-z0 coluna))) (list (cria-accao coluna peca-z0)))
+    ((and (= peca 'z)(= rotacao 1)(jogada-valida(estado peca-z1 coluna))) (list (cria-accao coluna peca-z1)))
     ;; peca t
-    ((and (= peca 't)(= rotacao 0)(jogada-valida(estado peca-t0 coluna))) (list (cria-accao coluna peca-t0))
-    ((and (= peca 't)(= rotacao 1)(jogada-valida(estado peca-t1 coluna))) (list (cria-accao coluna peca-t1))
-    ((and (= peca 't)(= rotacao 2)(jogada-valida(estado peca-t2 coluna))) (list (cria-accao coluna peca-t2))
-    ((and (= peca 't)(= rotacao 3)(jogada-valida(estado peca-t3 coluna))) (list (cria-accao coluna peca-t3))))
+    ((and (= peca 't)(= rotacao 0)(jogada-valida(estado peca-t0 coluna))) (list (cria-accao coluna peca-t0)))
+    ((and (= peca 't)(= rotacao 1)(jogada-valida(estado peca-t1 coluna))) (list (cria-accao coluna peca-t1)))
+    ((and (= peca 't)(= rotacao 2)(jogada-valida(estado peca-t2 coluna))) (list (cria-accao coluna peca-t2)))
+    ((and (= peca 't)(= rotacao 3)(jogada-valida(estado peca-t3 coluna))) (list (cria-accao coluna peca-t3)))))
 
 ;;;
 ;;; Verifica se uma jogada é valida
