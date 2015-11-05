@@ -196,31 +196,31 @@
 (defun identifica-jogada (estado peca rotacao coluna)
   (cond 
     ;; peca i
-    ((and (= peca 'i)(= rotacao 0)(jogada-valida(estado peca-i0 coluna))) (list (cria-accao coluna peca-i0)))
-    ((and (= peca 'i)(= rotacao 1)(jogada-valida(estado peca-i1 coluna))) (list (cria-accao coluna peca-i1)))
+    ((and (equal peca 'i)(= rotacao 0)(jogada-valida(estado peca-i0 coluna))) (list (cria-accao coluna peca-i0)))
+    ((and (equal peca 'i)(= rotacao 1)(jogada-valida(estado peca-i1 coluna))) (list (cria-accao coluna peca-i1)))
     ;; peca l
-    ((and (= peca 'l)(= rotacao 0)(jogada-valida(estado peca-l0 coluna))) (list (cria-accao coluna peca-l0)))
-    ((and (= peca 'l)(= rotacao 1)(jogada-valida(estado peca-l1 coluna))) (list (cria-accao coluna peca-l1)))
-    ((and (= peca 'l)(= rotacao 2)(jogada-valida(estado peca-l2 coluna))) (list (cria-accao coluna peca-l2)))
-    ((and (= peca 'l)(= rotacao 3)(jogada-valida(estado peca-l3 coluna))) (list (cria-accao coluna peca-l3)))
+    ((and (equal peca 'l)(= rotacao 0)(jogada-valida(estado peca-l0 coluna))) (list (cria-accao coluna peca-l0)))
+    ((and (equal peca 'l)(= rotacao 1)(jogada-valida(estado peca-l1 coluna))) (list (cria-accao coluna peca-l1)))
+    ((and (equal peca 'l)(= rotacao 2)(jogada-valida(estado peca-l2 coluna))) (list (cria-accao coluna peca-l2)))
+    ((and (equal peca 'l)(= rotacao 3)(jogada-valida(estado peca-l3 coluna))) (list (cria-accao coluna peca-l3)))
     ;; peca j
-    ((and (= peca 'j)(= rotacao 0)(jogada-valida(estado peca-j0 coluna))) (list (cria-accao coluna peca-j0)))
-    ((and (= peca 'j)(= rotacao 1)(jogada-valida(estado peca-j1 coluna))) (list (cria-accao coluna peca-j1)))
-    ((and (= peca 'j)(= rotacao 2)(jogada-valida(estado peca-j2 coluna))) (list (cria-accao coluna peca-j2)))
-    ((and (= peca 'j)(= rotacao 3)(jogada-valida(estado peca-j3 coluna))) (list (cria-accao coluna peca-j3)))
+    ((and (equal peca 'j)(= rotacao 0)(jogada-valida(estado peca-j0 coluna))) (list (cria-accao coluna peca-j0)))
+    ((and (equal peca 'j)(= rotacao 1)(jogada-valida(estado peca-j1 coluna))) (list (cria-accao coluna peca-j1)))
+    ((and (equal peca 'j)(= rotacao 2)(jogada-valida(estado peca-j2 coluna))) (list (cria-accao coluna peca-j2)))
+    ((and (equal peca 'j)(= rotacao 3)(jogada-valida(estado peca-j3 coluna))) (list (cria-accao coluna peca-j3)))
     ;; peca o
-    ((and (= peca 'o)(= rotacao 0)(jogada-valida(estado peca-o0 coluna))) (list (cria-accao coluna peca-o0)))
+    ((and (equal peca 'o)(= rotacao 0)(jogada-valida(estado peca-o0 coluna))) (list (cria-accao coluna peca-o0)))
     ;; peca s
-    ((and (= peca 's)(= rotacao 0)(jogada-valida(estado peca-s0 coluna))) (list (cria-accao coluna peca-s0)))
-    ((and (= peca 's)(= rotacao 1)(jogada-valida(estado peca-s1 coluna))) (list (cria-accao coluna peca-s1)))
+    ((and (equal peca 's)(= rotacao 0)(jogada-valida(estado peca-s0 coluna))) (list (cria-accao coluna peca-s0)))
+    ((and (equal peca 's)(= rotacao 1)(jogada-valida(estado peca-s1 coluna))) (list (cria-accao coluna peca-s1)))
     ;; peca z
-    ((and (= peca 'z)(= rotacao 0)(jogada-valida(estado peca-z0 coluna))) (list (cria-accao coluna peca-z0)))
-    ((and (= peca 'z)(= rotacao 1)(jogada-valida(estado peca-z1 coluna))) (list (cria-accao coluna peca-z1)))
+    ((and (equal peca 'z)(= rotacao 0)(jogada-valida(estado peca-z0 coluna))) (list (cria-accao coluna peca-z0)))
+    ((and (equal peca 'z)(= rotacao 1)(jogada-valida(estado peca-z1 coluna))) (list (cria-accao coluna peca-z1)))
     ;; peca t
-    ((and (= peca 't)(= rotacao 0)(jogada-valida(estado peca-t0 coluna))) (list (cria-accao coluna peca-t0)))
-    ((and (= peca 't)(= rotacao 1)(jogada-valida(estado peca-t1 coluna))) (list (cria-accao coluna peca-t1)))
-    ((and (= peca 't)(= rotacao 2)(jogada-valida(estado peca-t2 coluna))) (list (cria-accao coluna peca-t2)))
-    ((and (= peca 't)(= rotacao 3)(jogada-valida(estado peca-t3 coluna))) (list (cria-accao coluna peca-t3)))))
+    ((and (equal peca 't)(= rotacao 0)(jogada-valida(estado peca-t0 coluna))) (list (cria-accao coluna peca-t0)))
+    ((and (equal peca 't)(= rotacao 1)(jogada-valida(estado peca-t1 coluna))) (list (cria-accao coluna peca-t1)))
+    ((and (equal peca 't)(= rotacao 2)(jogada-valida(estado peca-t2 coluna))) (list (cria-accao coluna peca-t2)))
+    ((and (equal peca 't)(= rotacao 3)(jogada-valida(estado peca-t3 coluna))) (list (cria-accao coluna peca-t3)))))
 
 ;;;
 ;;; Verifica se uma jogada e valida
@@ -235,8 +235,8 @@
 ;;; ------------------------------
 (defun accoes (estado)
   (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
-    (cond ((or (= peca 'i)(= peca 's)(= peca 'z)) ((setf max-rotacao 1)))
-      ((or (= peca 'l)(= peca 'j)(= peca 't)) ((setf max-rotacao 3))))
+    (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) ((setf max-rotacao 1)))
+      ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) ((setf max-rotacao 3))))
     (dotimes (rotacao max-rotacao)
       (dotimes (coluna *COLUNAS*)
         (setf lista-accoes (append lista-accoes (identifica-jogada estado peca rotacao coluna)))))))
@@ -304,13 +304,13 @@
 (defun custo-oportunidade (estado)
   (let ((max-pontos 0))
     (dolist (peca (estado-pecas-colocadas estado) max-pontos)
-      (cond ((= peca 'i) (incf max-pontos 800))
-        ((= peca 'j) (incf max-pontos 500))
-        ((= peca 'l) (incf max-pontos 500))
-        ((= peca 's) (incf max-pontos 300))
-        ((= peca 'z) (incf max-pontos 300))
-        ((= peca 't) (incf max-pontos 300))
-        ((= peca 'o) (incf max-pontos 300))))))
+      (cond ((equal peca 'i) (incf max-pontos 800))
+        ((equal peca 'j) (incf max-pontos 500))
+        ((equal peca 'l) (incf max-pontos 500))
+        ((equal peca 's) (incf max-pontos 300))
+        ((equal peca 'z) (incf max-pontos 300))
+        ((equal peca 't) (incf max-pontos 300))
+        ((equal peca 'o) (incf max-pontos 300))))))
 
 
 ;;; ------------------------  ;;;
