@@ -1,11 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;	                                                  ;
+;                                                   ;
 ;       Projeto IA 2015/2016 --- grupo 59           ;
-;         Andre Sobral   nº 69481                   ;
-;         Rui Lourenco   nº 69701                   ;
-;         Fabio Almeida  nº 76959                   ;
+;         Andre Sobral   n 69481                    ;
+;         Rui Lourenco   n 69701                    ;
+;         Fabio Almeida  n 76959                    ;
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(load "utils.fas")
 
 ;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
@@ -159,7 +161,7 @@
 
 ;;;
 ;;; Verifica se este estado corresponde ao estado final de um jogo
-;;; Isto é se ja nao existirem pecas por colocar ou o tabuleiro atingir o topo
+;;; Isto e se ja nao existirem pecas por colocar ou o tabuleiro atingir o topo
 ;;;
 (defun estado-final-p (estado)
   (if (or (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
@@ -221,7 +223,7 @@
     ((and (= peca 't)(= rotacao 3)(jogada-valida(estado peca-t3 coluna))) (list (cria-accao coluna peca-t3)))))
 
 ;;;
-;;; Verifica se uma jogada é valida
+;;; Verifica se uma jogada e valida
 ;;;
 (defun jogada-valida (estado peca-array coluna)
   (let ((linha-base (tabuleiro-altura-coluna (estado-tabuleiro estado) coluna)))
