@@ -3,15 +3,6 @@
 * Data limite: 9/11/2015
 * Implementar as funções em baixo e definir os tipos Accao,Tabuleiro,Estado e Problema
 
-## TODO: ##
-### 2.1.3 Tipo Estado ###
-* copia-estado
-* estados-iguais-p
-* estado-final-p
-
-### 2.1.4 Tipo problema ###
-* implementar como estrutura (ver campos no pdf)
-
 ## DONE: ##
 ### 2.1.1 Tipo Acção ###
 * cria-accao
@@ -30,3 +21,18 @@
 * tabuleiros-iguais-p
 * tabuleiro->array
 * array->tabuleiro
+
+### 2.1.3 Tipo Estado ###
+* copia-estado
+* estados-iguais-p
+* estado-final-p
+
+### 2.1.4 Tipo problema ###
+* implementar como estrutura (ver campos no pdf)
+
+### 2.2.4 Funcoes procura ###
+* solucao
+* accoes
+* resultado
+* qualidade
+* custo-oportunidade
