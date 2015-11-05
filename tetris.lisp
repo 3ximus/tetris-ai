@@ -193,7 +193,7 @@
 ;;; Identifica peca basedo no identificador da peca e rotacao
 ;;; Verifica se jogada e valida e retorna o array da peca
 ;;;
-(defun identifica-jogada (estado peca rotacao coluna)
+(defun identifica-jogada (peca rotacao coluna)
   (cond 
     ;; peca i
     ((and (equal peca 'i)(= rotacao 0)(jogada-valida peca-i0 coluna)) (list (cria-accao coluna peca-i0)))
@@ -238,7 +238,7 @@
       ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
     (dotimes (rotacao max-rotacao)
       (dotimes (coluna *COLUNAS*)
-        (setf lista-accoes (append lista-accoes (identifica-jogada estado peca rotacao coluna)))))))
+        (setf lista-accoes (append lista-accoes (identifica-jogada peca rotacao coluna)))))))
 
 ;;;
 ;;; Descobre a base na coluna de uma peca
@@ -282,12 +282,13 @@
 (defun resultado (estado accao)
   (let ((novo-estado (copia-estado estado))(cont 0))
     (insere-peca novo-estado (rest accao) (first accao))
-    (if ((equal (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL) novo-estado)
+    (if ((tabuleiro-topo-preenchido-p (estado-tabuleiro estado)))
       (dotimes (linha *LINHAS*)
         (if ((tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha))
           (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
           (- linha 1)(+ cont 1)))
-      (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont))))))
+      (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont))))
+    novo-estado)))
 
 
 ;;; ------------------------
