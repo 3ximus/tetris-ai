@@ -173,8 +173,8 @@
 ;;;      Tipo Problema
 ;;; ------------------------  ;;;
 
-(defstruct problema (estado-inicial (make-estado)) (solucao (solucao estado-inicial)) 
-		    (accoes (accoes estado-inicial)) (resultado NIL) (custo-caminho NIL))
+(defstruct problema (estado-inicial (make-estado)) (solucao NIL) 
+		    (accoes NIL) (resultado NIL) (custo-caminho NIL))
 
 
 
@@ -186,7 +186,7 @@
 ;;; Recebe um estado e indica se este corresponde a uma solucao
 ;;; -----------------------------------------------------------
 (defun solucao (estado)
-  (if (and (equal estado-pecas-por-colocar NIL) (equal (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL))
+  (if (and (equal (estado-pecas-por-colocar estado) NIL) (equal (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL))
     T NIL))
 
 ;;;
@@ -226,17 +226,16 @@
 ;;; Verifica se uma jogada e valida
 ;;;
 (defun jogada-valida (estado peca-array coluna)
-  (let ((linha-base (tabuleiro-altura-coluna (estado-tabuleiro estado) coluna)))
     (if (<= (array-dimension peca-array 1) (- (- *COLUNAS* 1) coluna))
-      T NIL)))
+      T NIL))
 
 ;;; ------------------------------
 ;;; Indica se uma accao e valida
 ;;; ------------------------------
 (defun accoes (estado)
   (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
-    (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) ((setf max-rotacao 1)))
-      ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) ((setf max-rotacao 3))))
+    (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
+      ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
     (dotimes (rotacao max-rotacao)
       (dotimes (coluna *COLUNAS*)
         (setf lista-accoes (append lista-accoes (identifica-jogada estado peca rotacao coluna)))))))
@@ -255,7 +254,7 @@
   (dotimes (peca-linha (array-dimension peca-array 0))
     (dotimes (peca-coluna (array-dimension peca-array 1))
       (if (aref peca-array peca-linha peca-coluna) 
-        (setf (aref (estado-tabuleiro estado) (+ linha peca-linha) (+ coluna peca-coluna)))))))
+        (setf (aref (estado-tabuleiro estado) (+ linha peca-linha) (+ coluna peca-coluna)) (aref peca-array peca-linha peca-coluna))))))
 
 ;;;
 ;;; Insere uma peca numa posicao
