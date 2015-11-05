@@ -7,7 +7,7 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "utils.fas")
+;(load "utils.fas")
 
 ;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
@@ -226,17 +226,18 @@
 ;;; Verifica se uma jogada e valida
 ;;;
 (defun jogada-valida (peca-array coluna)
-    (if (<= (array-dimension peca-array 1) (- (- *COLUNAS* 1) coluna))
-      T NIL))
+    (if (<= (array-dimension peca-array 1) (- *COLUNAS* coluna))
+      T 
+      NIL))
 
-;;; ------------------------------
-;;; Indica se uma accao e valida
+;;;------------------------------
+;;; Compoi a lista de accoes possiveis
 ;;; ------------------------------
 (defun accoes (estado)
   (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
     (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
-      ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
-    (dotimes (rotacao max-rotacao)
+          ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
+    (dotimes (rotacao (+ max-rotacao 1) lista-accoes)
       (dotimes (coluna *COLUNAS*)
         (setf lista-accoes (append lista-accoes (identifica-jogada peca rotacao coluna)))))))
 
