@@ -7,7 +7,7 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;(load "utils.fas")
+(load "utils.fas")
 
 ;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
@@ -175,8 +175,6 @@
 
 (defstruct problema (estado-inicial (make-estado)) (solucao NIL) 
 		    (accoes NIL) (resultado NIL) (custo-caminho NIL))
-
-
 
 ;;; ------------------------  ;;;
 ;;;    Funcoes de Procura
