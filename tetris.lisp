@@ -282,13 +282,15 @@
 (defun resultado (estado accao)
   (let ((novo-estado (copia-estado estado))(cont 0))
     (insere-peca novo-estado (rest accao) (first accao))
-    (if ((tabuleiro-topo-preenchido-p (estado-tabuleiro estado)))
+    (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
       (dotimes (linha *LINHAS*)
-        (if ((tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha))
-          (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
-          (- linha 1)(+ cont 1)))
+        (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
+          (progn
+            (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
+            (- linha 1)
+            (+ cont  1))))
       (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont))))
-    novo-estado)))
+    novo-estado))
 
 
 ;;; ------------------------
