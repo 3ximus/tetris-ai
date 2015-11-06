@@ -7,7 +7,7 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "utils.fas")
+;;(load "utils.fas")
 
 ;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
@@ -240,31 +240,14 @@
         (setf lista-accoes (append lista-accoes (identifica-jogada peca rotacao coluna)))))))
 
 ;;;
-;;; Descobre a base na coluna de uma peca
-;;;
-(defun base-peca-coluna (peca-array coluna)
-  (dotimes (linha (array-dimension peca-array 0))
-    (if (aref peca-array linha coluna)(return linha))))
-
-;;;
-;;; Desenha um peca num tabuleiro
-;;;
-(defun desenha-peca-tabuleiro (estado peca-array linha coluna)
-  (dotimes (peca-linha (array-dimension peca-array 0))
-    (dotimes (peca-coluna (array-dimension peca-array 1))
-      (if (aref peca-array peca-linha peca-coluna) 
-        (setf (aref (estado-tabuleiro estado) (+ linha peca-linha) (+ coluna peca-coluna)) (aref peca-array peca-linha peca-coluna))))))
-
-;;;
-;;; Insere uma peca numa posicao
-;;;
-(defun insere-peca (estado peca-array coluna)
-  (let ((linha-base 0)(linha-max 0)(linha-a-inserir 0))
-    (dotimes (peca-coluna (array-dimension peca-array 1))
-      (setf linha-max (+ (tabuleiro-altura-coluna (estado-tabuleiro estado) (+ coluna peca-coluna)) 1))
-      (setf linha-base (- linha-max (base-peca-coluna peca-array peca-coluna)))
-      (if (> linha-base linha-a-inserir) (setf linha-a-inserir linha-base)))
-    (desenha-peca-tabuleiro estado peca-array linha-a-inserir coluna)))
+;;; Insere uma peca numa posicao do tabuleiro
+;;; -----> very naive way to implement ---> too simple --> nao escolhe bem a altura correta para desenhar a peca
+(defun insere-peca (tab peca-coluna peca-array)
+  (let ((linha-base (tabuleiro-altura-coluna tab peca-coluna)))
+        (dotimes (linha (array-dimension peca-array 0) peca-array)
+          (dotimes (coluna (array-dimension peca-array 1))
+            (if (aref peca-array linha coluna) 
+              (tabuleiro-preenche! tab (+ linha-base linha) (+ peca-coluna coluna)))))))
 
 ;;;
 ;;; Calcula numero de pontos a somar segundo o numero de linhas dado
@@ -279,8 +262,14 @@
 ;;; Recebe um estado e uma accao e aplica a accao a esse estado
 ;;; -----------------------------------------------------------
 (defun resultado (estado accao)
-  (let ((novo-estado (copia-estado estado))(cont 0))
-    (insere-peca novo-estado (rest accao) (first accao))
+  (let ((novo-estado (copia-estado estado))
+        (cont 0)
+        (peca (first (estado-pecas-por-colocar estado))))
+  (insere-peca (estado-tabuleiro novo-estado) (accao-coluna accao) (accao-peca accao))
+  ;; remove o primeiro elemento da lista de pecas por colocar
+  (setf (estado-pecas-por-colocar estado) (rest (estado-pecas-por-colocar estado)))
+  ;; adiciona o elemento removido a lista de pecas colocadas
+  (setf (estado-pecas-colocadas estado)(append (estado-pecas-colocadas estado) (list peca)))
     (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
       (dotimes (linha *LINHAS*)
         (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
