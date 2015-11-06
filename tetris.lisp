@@ -7,7 +7,7 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "utils.fas")
+;(load "utils.fas")
 
 ;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
@@ -240,20 +240,39 @@
         (setf lista-accoes (append lista-accoes (identifica-jogada peca rotacao coluna)))))))
 
 ;;;
+;;; Desenha um peca num tabuleiro
+;;;
+(defun desenha-peca-tabuleiro (tabuleiro peca-array linha coluna)
+ (dotimes (peca-linha (array-dimension peca-array 0))
+   (dotimes (peca-coluna (array-dimension peca-array 1))
+     (if (aref peca-array peca-linha peca-coluna) 
+       (setf (aref (tabuleiro-data tabuleiro) (+ linha peca-linha) (+ coluna peca-coluna)) (aref peca-array peca-linha peca-coluna))))))
+
+;;;
+;;; Descobre a base na coluna de uma peca
+;;;
+(defun base-peca-coluna (peca-array coluna)
+ (dotimes (linha (array-dimension peca-array 0))
+   (if (aref peca-array linha coluna)(return linha))))
+
+;;;
 ;;; Insere uma peca numa posicao do tabuleiro
-;;; -----> very naive way to implement ---> too simple --> nao escolhe bem a altura correta para desenhar a peca
-(defun insere-peca (tab peca-coluna peca-array)
-  (let ((linha-base (tabuleiro-altura-coluna tab peca-coluna)))
-        (dotimes (linha (array-dimension peca-array 0) peca-array)
-          (dotimes (coluna (array-dimension peca-array 1))
-            (if (aref peca-array linha coluna) 
-              (tabuleiro-preenche! tab (+ linha-base linha) (+ peca-coluna coluna)))))))
+;;;
+(defun insere-peca (tabuleiro coluna peca-array)
+  (let ((linha-base 0)(linha-max 0)(linha-a-inserir 0))
+    (dotimes (peca-coluna (array-dimension peca-array 1))
+      (setf linha-max (+ (tabuleiro-altura-coluna tabuleiro (+ coluna peca-coluna)) 1))
+      (setf linha-base (- linha-max (base-peca-coluna peca-array peca-coluna)))
+      (if (> linha-base linha-a-inserir)
+        (setf linha-a-inserir linha-base)))
+    (desenha-peca-tabuleiro tabuleiro peca-array linha-a-inserir coluna)))
 
 ;;;
 ;;; Calcula numero de pontos a somar segundo o numero de linhas dado
 ;;; 
 (defun calcula-pontos (contador)
-  (cond ((= contador 1) 100)
+  (cond ((= contador 0) 0)
+    ((= contador 1) 100)
     ((= contador 2) 300)
     ((= contador 3) 500)
     ((= contador 4) 800)))
@@ -261,24 +280,23 @@
 ;;; -----------------------------------------------------------
 ;;; Recebe um estado e uma accao e aplica a accao a esse estado
 ;;; -----------------------------------------------------------
-(defun resultado (estado accao)
-  (let ((novo-estado (copia-estado estado))
-        (cont 0)
-        (peca (first (estado-pecas-por-colocar estado))))
+(defun resultado (estado-inicial accao)
+  (let* ((novo-estado (copia-estado estado-inicial))
+        (cont 0))
   (insere-peca (estado-tabuleiro novo-estado) (accao-coluna accao) (accao-peca accao))
-  ;; remove o primeiro elemento da lista de pecas por colocar
-  (setf (estado-pecas-por-colocar estado) (rest (estado-pecas-por-colocar estado)))
-  ;; adiciona o elemento removido a lista de pecas colocadas
-  (setf (estado-pecas-colocadas estado)(append (estado-pecas-colocadas estado) (list peca)))
-    (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
+  (setf (estado-pecas-colocadas novo-estado) 
+    (append (list (first (estado-pecas-por-colocar novo-estado))) (estado-pecas-colocadas novo-estado)))
+  (setf (estado-pecas-por-colocar novo-estado) (rest (estado-pecas-por-colocar novo-estado)))
+  (if (not (tabuleiro-topo-preenchido-p (estado-tabuleiro novo-estado)))
+    (progn
       (dotimes (linha *LINHAS*)
         (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
           (progn
             (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
             (- linha 1)
             (+ cont  1))))
-      (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont))))
-    novo-estado))
+      (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont)))))
+  novo-estado))
 
 
 ;;; ------------------------
@@ -295,12 +313,8 @@
   (let ((max-pontos 0))
     (dolist (peca (estado-pecas-colocadas estado) max-pontos)
       (cond ((equal peca 'i) (incf max-pontos 800))
-        ((equal peca 'j) (incf max-pontos 500))
-        ((equal peca 'l) (incf max-pontos 500))
-        ((equal peca 's) (incf max-pontos 300))
-        ((equal peca 'z) (incf max-pontos 300))
-        ((equal peca 't) (incf max-pontos 300))
-        ((equal peca 'o) (incf max-pontos 300))))
+        ((or (equal peca 'j)(equal peca 'l)) (incf max-pontos 500))
+        ((or (equal peca 's)(equal peca 'z)(equal peca 't)(equal peca 'o)) (incf max-pontos 300))))
   (- max-pontos (estado-pontos estado))))
 
 
