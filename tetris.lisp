@@ -86,7 +86,7 @@
 ;;;
 (defun tabuleiro-topo-preenchido-p (tab)
   (dotimes (coluna *COLUNAS* NIL)
-    (if (equal (aref (tabuleiro-data tab) (- *LINHAS* 1) coluna) t) 
+    (if (aref (tabuleiro-data tab) (- *LINHAS* 1) coluna)
       (return T))))
 
 ;;;     
