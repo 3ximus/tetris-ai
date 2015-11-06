@@ -7,7 +7,7 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "utils.fas")
+;(load "utils.fas")
 
 ;;; ------------ Tipo Accao ------------  ;;;
 (defun cria-accao (coluna peca)
@@ -86,8 +86,8 @@
 ;;;
 (defun tabuleiro-topo-preenchido-p (tab)
   (dotimes (coluna *COLUNAS* NIL)
-    (if(= (tabuleiro-altura-coluna tab coluna) *LINHAS*)
-      T)))
+    (if (equal (aref (tabuleiro-data tab) (- *LINHAS* 1) coluna) t) 
+      (return T))))
 
 ;;;     
 ;;; Verifica se 2 tabuleiros sao iguais
@@ -300,7 +300,8 @@
         ((equal peca 's) (incf max-pontos 300))
         ((equal peca 'z) (incf max-pontos 300))
         ((equal peca 't) (incf max-pontos 300))
-        ((equal peca 'o) (incf max-pontos 300))))))
+        ((equal peca 'o) (incf max-pontos 300))))
+  (- max-pontos (estado-pontos estado))))
 
 
 ;;; ------------------------  ;;;
