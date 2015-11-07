@@ -171,7 +171,8 @@
 ;;; -----------------------------------------------------------
 (defun copia-estado (estado)
   "Copia um estado"
-  (make-estado :pontos (estado-pontos estado) :pecas-por-colocar (copy-list(estado-pecas-por-colocar estado))
+  (make-estado :pontos (estado-pontos estado) 
+               :pecas-por-colocar (copy-list(estado-pecas-por-colocar estado))
                :pecas-colocadas (copy-list (estado-pecas-colocadas estado)) 
                :tabuleiro (copia-tabuleiro (estado-tabuleiro estado))))
 
@@ -333,7 +334,7 @@
 ;;; - contador -> numero de linhas removidas
 ;;; Devolve o numero de pontos calculado
 (defun calcula-pontos (contador)
-  "Calula pontos consoante numero de linhas removido"
+  "Calcula pontos consoante numero de linhas removido"
   (cond ((= contador 0) 0)
     ((= contador 1) 100)
     ((= contador 2) 300)
@@ -343,7 +344,7 @@
 ;;; -----------------------------------------------------------
 ;;; Aplica accao num estado
 ;;; - estado -> estado onde aplicar accao
-;;; - accao -> accap a aplicar
+;;; - accao -> accao a aplicar
 ;;; Devolve novo estado
 ;;; -----------------------------------------------------------
 (defun resultado (estado-inicial accao)
