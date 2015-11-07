@@ -261,7 +261,7 @@
 (defun insere-peca (tabuleiro coluna peca-array)
   (let ((linha-base 0)(linha-max 0)(linha-a-inserir 0))
     (dotimes (peca-coluna (array-dimension peca-array 1))
-      (setf linha-max (+ (tabuleiro-altura-coluna tabuleiro (+ coluna peca-coluna)) 1))
+      (setf linha-max (tabuleiro-altura-coluna tabuleiro (+ coluna peca-coluna)))
       (setf linha-base (- linha-max (base-peca-coluna peca-array peca-coluna)))
       (if (> linha-base linha-a-inserir)
         (setf linha-a-inserir linha-base)))
@@ -281,8 +281,7 @@
 ;;; Recebe um estado e uma accao e aplica a accao a esse estado
 ;;; -----------------------------------------------------------
 (defun resultado (estado-inicial accao)
-  (let* ((novo-estado (copia-estado estado-inicial))
-        (cont 0))
+  (let* ((novo-estado (copia-estado estado-inicial))(contador 0))
   (insere-peca (estado-tabuleiro novo-estado) (accao-coluna accao) (accao-peca accao))
   (setf (estado-pecas-colocadas novo-estado) 
     (append (list (first (estado-pecas-por-colocar novo-estado))) (estado-pecas-colocadas novo-estado)))
@@ -293,9 +292,8 @@
         (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
           (progn
             (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
-            (- linha 1)
-            (+ cont  1))))
-      (setf (estado-pontos novo-estado) (+ (estado-pontos novo-estado) (calcula-pontos cont)))))
+            (decf linha)(incf contador))))
+      (incf (estado-pontos novo-estado)(calcula-pontos contador))))
   novo-estado))
 
 
