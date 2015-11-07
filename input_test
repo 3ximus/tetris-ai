@@ -16,3 +16,6 @@
 (desenha-estado estado6)
 (ignore-value (setf estado7 (resultado estado6 '(0 . #2A((T)(T)(T)(T))))))
 (desenha-estado estado7)
+; jogada invalida
+(ignore-value (setf estado8 (resultado estado7 '(9 . #2A((nil T)(T T)(T nil))))))
+(desenha-estado estado8)
