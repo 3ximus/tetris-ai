@@ -133,7 +133,7 @@
 ;;; Cria um tabuleiro com conteudo igual a (arrayOfContent)
 ;;; --------------------------------------------
 (defun array->tabuleiro (arrayOfContent)
-  (make-tabuleiro :data (copia->array arrayOfContent)))
+  (make-tabuleiro :data (copia-array arrayOfContent)))
 
 ;;; Funcoes auxiliares
 (defun valida-linha (linha)
