@@ -398,3 +398,31 @@
 ;;; ======================== ;;;
 ;;;         Procuras
 ;;; ======================== ;;;
+
+;;; -----------------------------------------------------------
+;;; Procura uma solucao para resolver o problema (Profundidade primeiro)
+;;;  - problema
+;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
+;;; -----------------------------------------------------------
+(defun procura-pp (problema)
+	)
+
+;;; -----------------------------------------------------------
+;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
+;;;  - problema
+;;;  - heuristica -> funcao que recebe um estado e devolve um numero que representa o custo-qualidade
+;;;                  a partir desse estado ate ao melhor estado objectivo
+;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
+;;; -----------------------------------------------------------
+(defun procura-A* (problema heuristica)
+	)
+
+;;; -----------------------------------------------------------
+;;; Identifica a melhor procura possivel  
+;;;  - tabuleiro 
+;;;  - lista-pecas -> lista de pecas por colocar 
+;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
+;;; -----------------------------------------------------------
+(defun procura-best (tabuleiro lista-pecas)
+	)
+
