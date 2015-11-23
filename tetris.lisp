@@ -7,7 +7,7 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "utils.fas")
+;(load "utils.fas")
 
 ;;; ======================== ;;;
 ;;;       Tipo Accao
@@ -292,10 +292,14 @@
   "Desenha uma peca numa certa posicao num tabuleiro"
  (dotimes (peca-linha (array-dimension peca-array 0))
    (dotimes (peca-coluna (array-dimension peca-array 1))
-     (if (aref peca-array peca-linha peca-coluna)
+     (if (and (valida-linha (+ peca-linha linha)) (aref peca-array peca-linha peca-coluna))
+      (progn
       ; insere a peca com segundo offset calculado
        (setf (aref (tabuleiro-data tabuleiro) (+ linha peca-linha) (+ coluna peca-coluna))
-        (aref peca-array peca-linha peca-coluna))))))
+        (aref peca-array peca-linha peca-coluna))
+
+       )))))
+
 
 ;;; Descobre base de uma coluna de uma peca
 ;;; - peca-array -> array de peca a analizar

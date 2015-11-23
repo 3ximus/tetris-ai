@@ -139,7 +139,7 @@
 	(format T "|"))			
 
 			
-;exemplo muito simples de um tabuleiro com a primeira e segunda linha quase todas preenchidas
+;;exemplo muito simples de um tabuleiro com a primeira e segunda linha quase todas preenchidas
 (defvar t1 (cria-tabuleiro))
 (dotimes (coluna 9)
 	(tabuleiro-preenche! t1 0 coluna))

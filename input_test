@@ -1,21 +1,12 @@
 ;;; Teste 14
 ;;; Testes fn resultado
 ;;deve retornar IGNORE
-(ignore-value (setf estado1 (make-estado :pontos 50 :pecas-por-colocar '(i j) :pecas-colocadas '(z z z) :tabuleiro (cria-tabuleiro-aleatorio 0.7 0.2))))
+(ignore-value (setf estado1 (make-estado :pontos 50 :pecas-por-colocar '(i j) :pecas-colocadas '(z z z) :tabuleiro (cria-tabuleiro-aleatorio 1.0 0.05))))
+(valida-linha 17)
+(trace insere-peca)
+(trace desenha-peca-tabuleiro)
 ;;deve retornar IGNORE
+(format T "~%TEST2 ~D" (aref (tabuleiro-data (estado-tabuleiro estado1)) 17 9))
 (desenha-estado estado1)
 (ignore-value (setf estado2 (resultado estado1 '(7 . #2A((T T nil)(nil T T))))))
 (desenha-estado estado2)
-(ignore-value (setf estado3 (resultado estado2 '(5 . #2A((T T nil)(nil T T))))))
-(desenha-estado estado3)
-(ignore-value (setf estado4 (resultado estado3 '(3 . #2A((T T nil)(nil T T))))))
-(desenha-estado estado4)
-(ignore-value (setf estado5 (resultado estado4 '(1 . #2A((nil T)(T T)(T nil))))))
-(desenha-estado estado5)
-(ignore-value (setf estado6 (resultado estado5 '(2 . #2A((nil T)(T T)(T nil))))))
-(desenha-estado estado6)
-(ignore-value (setf estado7 (resultado estado6 '(0 . #2A((T)(T)(T)(T))))))
-(desenha-estado estado7)
-; jogada invalida
-(ignore-value (setf estado8 (resultado estado7 '(9 . #2A((nil T)(T T)(T nil))))))
-(desenha-estado estado8)
