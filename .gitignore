@@ -1,6 +1,5 @@
 *.fasl
 *.fas
 *.lib
-max3.lisp
-max.lisp
+utils.lisp
 .DS_Store

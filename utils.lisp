@@ -153,3 +153,10 @@
 				   :accoes #'accoes
 				   :resultado #'resultado
 				   :custo-caminho #'custo-oportunidade))
+
+(defvar p2
+	(make-problema :estado-inicial (make-estado :tabuleiro t1
+				   :solucao #'solucao
+				   :accoes #'accoes
+				   :resultado #'resultado
+				   :custo-caminho #'custo-oportunidade))

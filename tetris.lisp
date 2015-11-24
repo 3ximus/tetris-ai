@@ -409,7 +409,28 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-pp (problema)
-	)
+  (let* ((estado (problema-estado-inicial problema))
+        (estados-a-explorar (list estado))
+        (accoes-backTrack (list))
+        (lista-accoes (list)))
+    (loop
+      (setf estado (first estados-a-explorar))
+      ;se o estado for solucao retorna lista-accoes
+      (when (funcall (problema-solucao problema) estado) (return lista-accoes))
+      ;percorre a lista de accoes para um estado
+      ;atualiza lista de estados a explorar calculando o resultado do estado para cada accao
+      (dolist (accao (funcall (problema-accoes problema) estado) T)
+        (insere-lista accoes-backTrack accao)
+        (insere-lista estados-a-explorar (funcall (problema-resultado problema) estado accao)))
+      (insere-lista lista-accoes (first accoes-backTrack))
+    ))) 
+
+;;; LIFO functions
+(defun insere-lista (lista obj)
+  (append (list obj) lista))
+
+(defun remove-lista (lista)
+  (rest lista))
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
