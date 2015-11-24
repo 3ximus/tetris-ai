@@ -1,5 +1,4 @@
 *.fasl
 *.fas
 *.lib
-utils.lisp
 .DS_Store
