@@ -398,7 +398,7 @@
     ; calcula a diferenca entre pontos possiveis e obtidos
   (- max-pontos (estado-pontos estado))))
 
-
+ 
 ;;; ======================== ;;;
 ;;;         Procuras
 ;;; ======================== ;;;
@@ -408,27 +408,45 @@
 ;;;  - problema
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
+;;;
+;;; Procurar todas as opcoes possiveis, retorna a primeira solucao possivel.
+;;; Procura recursiva --- ???
+;;;
 (defun procura-pp (problema)
-  (let* ((estado (problema-estado-inicial problema))
-        (estados-a-explorar (list estado))
+  (let ((estado NIL)
+        (estados-a-explorar (list (problema-estado-inicial problema)))
         (lista-accoes (list)))
     (loop
-      ;estado que vamos expandir
+      ;Escolher estado a explorar (Last in First Out)
       (setf estado (first estados-a-explorar))
-      (setf estados-a-explorar (rest estados-a-explorar))
-      ;se o estado for solucao termina o ciclo e retorna lista-accoes
-      (when (funcall (problema-solucao problema) estado) (return lista-accoes))
-      ;Expansao do estado.
-      ;percorre a lista de accoes para o estado corrente
-      ;atualiza lista de estados a explorar calculando o resultado do estado para cada accao
-      (dolist (accao (funcall (problema-accoes problema) estado) T)
-        (setf estados-a-explorar (insere-lista estados-a-explorar (funcall (problema-resultado problema) estado accao))))
-      (setf lista-accoes (insere-lista lista-accoes (first (funcall (problema-accoes problema) (first estados-a-explorar))))))
-    )) 
 
+      ;Remover esse estado da lista de estados a explorar
+      (setf estados-a-explorar (rest estados-a-explorar))
+
+      ;Um estado e solucao se ja nao tiver pecas para colocar e se o topo do tabuleiro nao tiver preenchido
+      ;Se o estado for solucao termina o ciclo e retorna lista-accoes
+
+      (when (funcall (problema-solucao problema) estado) (return lista-accoes))
+
+      ;Calculo dos sucessores do estado.
+      ;Atualiza lista de estados a explorar calculando o resultado do estado para cada accao
+      (dolist (reverse (accao (funcall (problema-accoes problema) estado)))
+        ((setf place value) estados-a-explorar (insere-inicio-lista estados-a-explorar (funcall (problema-resultado problema) estado accao))))
+
+
+      (setf lista-accoes (insere-fim-lista lista-accoes (first (last (funcall (problema-accoes problema) estado)))))
+      (desenha-estado estado))
+   )) 
+
+;;; push 
+;;; reverse
+;;; cdr 
 ;;; LIFO functions --- depois retiro mas por enquanto da jeito
-(defun insere-lista (lista obj)
+(defun insere-inicio-lista (lista obj)
   (append (list obj) lista))
+
+(defun insere-fim-lista (lista obj)
+	(append lista (list obj)))
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
