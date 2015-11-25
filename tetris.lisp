@@ -275,16 +275,17 @@
 ;;; Devolve uma lista de accoes possiveis
 ;;; --------------------------------------------
 (defun accoes (estado)
-  "Compoe a lista de accoes possiveis"
+ "Compoe a lista de accoes possiveis"
+ (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL
   (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
-    ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
-    (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
-          ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
-    (dotimes (rotacao (+ max-rotacao 1) lista-accoes)
-      ; analisa todas as colunas para cada difente rotacao
-      (dotimes (coluna *COLUNAS*)
-        ; cria a lista de accoes com todas as acceos possiveis
-        (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna)))))))
+   ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
+   (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
+    ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
+   (dotimes (rotacao (+ max-rotacao 1) lista-accoes)
+    ; analisa todas as colunas para cada difente rotacao
+    (dotimes (coluna *COLUNAS*)
+     ; cria a lista de accoes com todas as acceos possiveis
+       (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna))))))))
 
 ;;; Desenha um peca num tabuleiro
 ;;; - tabuleiro -> tabuleiro onde desenhar
