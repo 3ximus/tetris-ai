@@ -403,50 +403,23 @@
 ;;;         Procuras
 ;;; ======================== ;;;
 
+;;; Depth first search algorithm
+;;; Devolve uma lista de estados comecando no estado inicial passado ate ao estado solucao
+(defun dfs (problema estado lista)
+	(if (funcall (problema-solucao problema) estado)
+		(list estado))
+	(dolist (accao (funcall (problema-accoes problema) estado))
+		(let ((estado-retornado (dfs problema (funcall (problema-resultado problema) estado accao) lista)))
+			(if (not (null estado-retornado)) (return (append (list estado) lista)) NIL))))
+
 ;;; -----------------------------------------------------------
 ;;; Procura uma solucao para resolver o problema (Profundidade primeiro)
 ;;;  - problema
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
-;;;
-;;; Procurar todas as opcoes possiveis, retorna a primeira solucao possivel.
-;;; Procura recursiva --- ???
-;;;
 (defun procura-pp (problema)
-  (let ((estado NIL)
-        (estados-a-explorar (list (problema-estado-inicial problema)))
-        (lista-accoes (list)))
-    (loop
-      ;Escolher estado a explorar (Last in First Out)
-      (setf estado (first estados-a-explorar))
-
-      ;Remover esse estado da lista de estados a explorar
-      (setf estados-a-explorar (rest estados-a-explorar))
-
-      ;Um estado e solucao se ja nao tiver pecas para colocar e se o topo do tabuleiro nao tiver preenchido
-      ;Se o estado for solucao termina o ciclo e retorna lista-accoes
-
-      (when (funcall (problema-solucao problema) estado) (return lista-accoes))
-
-      ;Calculo dos sucessores do estado.
-      ;Atualiza lista de estados a explorar calculando o resultado do estado para cada accao
-      (dolist (reverse (accao (funcall (problema-accoes problema) estado)))
-        ((setf place value) estados-a-explorar (insere-inicio-lista estados-a-explorar (funcall (problema-resultado problema) estado accao))))
-
-
-      (setf lista-accoes (insere-fim-lista lista-accoes (first (last (funcall (problema-accoes problema) estado)))))
-      (desenha-estado estado))
-   )) 
-
-;;; push 
-;;; reverse
-;;; cdr 
-;;; LIFO functions --- depois retiro mas por enquanto da jeito
-(defun insere-inicio-lista (lista obj)
-  (append (list obj) lista))
-
-(defun insere-fim-lista (lista obj)
-	(append lista (list obj)))
+  (let ((lista-accoes (list)))
+	(dfs problema (problema-estado-inicial problema) lista-accoes)))
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
