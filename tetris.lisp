@@ -437,11 +437,11 @@
 	    (let* ((estado-resultado (funcall (problema-resultado problema) estado accao))
 		   (custo (funcall (problema-custo-caminho problema) estado-resultado))
 		   (custo-total (+ custo (funcall heuristica estado-resultado))))
-			(format T "~D/~D      ~S~%" custo custo-total accao)
+			(format T "~D/~D     ~S      ~S~%" custo (estado-pontos estado-resultado) (estado-pecas-colocadas estado-resultado)  accao)
 		   ;;; se custo calculado for minimo escolhemos esse como melhor estado
 		   (if (<= custo-total menor-custo) (progn (setf menor-custo custo) (setf estado-a-escolher estado-resultado)(setf accao-a-escolher accao)))))
 	  ;;; adiciona melhor estado a lista e prepara proxima iteracao caso a heuristica deste estado nao seja 0, se for retorna da funcao
-(format T "~S" (estado-pecas-por-colocar estado-a-escolher))
+(format T "------------------------------------~%" (estado-pecas-por-colocar estado-a-escolher))
 	  (setf lista (append lista (list accao-a-escolher)))
 	  (when (and (= (funcall heuristica estado-a-escolher) 0) (funcall (problema-solucao problema) estado-a-escolher))(return lista))
 	  (setf menor-custo infinity)
