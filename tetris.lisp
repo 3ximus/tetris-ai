@@ -203,6 +203,11 @@
 ;;; ======================== ;;;
 
 ;;; Estrutura do tipo problema
+;;;  - estado-inicial -> estado inicial do problema
+;;;  - solucao -> funcao que devolve T se estado recebido for solucao
+;;;  - accoes -> funcao que retorna lista de accoes
+;;;  - resultado -> funcao que aplica uma accao a um estado
+;;;  - custo-caminho -> funcao que recebe estado e retorna o custo do caminho desde o estado inicial
 (defstruct problema (estado-inicial (make-estado)) (solucao NIL) 
 		    (accoes NIL) (resultado NIL) (custo-caminho NIL))
 
@@ -419,7 +424,24 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-A* (problema heuristica)
-	)
+  (let ((estado (problema-estado-inicial problema))
+	(lista NIL)
+	(menor-custo 999999))
+	(loop 
+	  ;;; iterar sobre todos os possiveis estados
+	  (dolist (accao (funcall (problema-accoes problema) estado))
+	    ;;; calcula estdo e custos
+	    (let* ((estado-resultado (funcall (problema-resultado problema) estado accao))
+		   (custo (funcall (problema-custo-caminho problema) estado-resultado))
+		   (custo-total (+ custo (funcall heuristica estado-resultado)))
+		   ;;; se custo calculado for minimo escolhemos esse como melhor estado
+		   (if (< menor-custo custo-total)) (progn (setf menor-custo custo) (setf estado-a-escolher estado-resultado)))))
+	  ;;; adiciona melhor estado a lista e prepara proxima iteracao caso a heuristica deste estado nao seja 0, se for retorna da funcao
+	  (append lista estado-a-escolher)
+	  (when (= (funcall heuristica estado-a-escolher) 0)(return lista)))))
+	  (setf estado estado-a-escolher)
+
+
 
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
@@ -428,5 +450,3 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-best (tabuleiro lista-pecas)
-	)
-
