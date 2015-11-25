@@ -438,8 +438,8 @@
 		   (if (< menor-custo custo-total)) (progn (setf menor-custo custo) (setf estado-a-escolher estado-resultado)))))
 	  ;;; adiciona melhor estado a lista e prepara proxima iteracao caso a heuristica deste estado nao seja 0, se for retorna da funcao
 	  (append lista estado-a-escolher)
-	  (when (= (funcall heuristica estado-a-escolher) 0)(return lista)))))
-	  (setf estado estado-a-escolher)
+	  (when (= (funcall heuristica estado-a-escolher) 0)(return lista))
+	  (setf estado estado-a-escolher))))
 
 
 
@@ -450,3 +450,4 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-best (tabuleiro lista-pecas)
+	)
