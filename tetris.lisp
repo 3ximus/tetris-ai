@@ -7,7 +7,6 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;(load "utils.fas")
 
 ;;; ======================== ;;;
 ;;;       Tipo Accao
@@ -413,8 +412,8 @@
 ;;;  - problema
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
-(defun procura-pp (problema)
-	)
+;;;(defun procura-pp (problema))
+
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
@@ -424,21 +423,27 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-A* (problema heuristica)
-  (let ((estado (problema-estado-inicial problema))
+  (let* ((estado (problema-estado-inicial problema))
 	(lista NIL)
-	(menor-custo 999999))
+	(infinity 99999999)
+	(menor-custo infinity)
+	(accao-a-escolher)
+	(estado-a-escolher NIL))
 	(loop 
 	  ;;; iterar sobre todos os possiveis estados
 	  (dolist (accao (funcall (problema-accoes problema) estado))
 	    ;;; calcula estdo e custos
 	    (let* ((estado-resultado (funcall (problema-resultado problema) estado accao))
 		   (custo (funcall (problema-custo-caminho problema) estado-resultado))
-		   (custo-total (+ custo (funcall heuristica estado-resultado)))
+		   (custo-total (+ custo (funcall heuristica estado-resultado))))
+			(format T "~D/~D      ~S~%" custo custo-total accao)
 		   ;;; se custo calculado for minimo escolhemos esse como melhor estado
-		   (if (< menor-custo custo-total)) (progn (setf menor-custo custo) (setf estado-a-escolher estado-resultado)))))
+		   (if (<= custo-total menor-custo) (progn (setf menor-custo custo) (setf estado-a-escolher estado-resultado)(setf accao-a-escolher accao)))))
 	  ;;; adiciona melhor estado a lista e prepara proxima iteracao caso a heuristica deste estado nao seja 0, se for retorna da funcao
-	  (append lista estado-a-escolher)
-	  (when (= (funcall heuristica estado-a-escolher) 0)(return lista))
+(format T "~S" (estado-pecas-por-colocar estado-a-escolher))
+	  (setf lista (append lista (list accao-a-escolher)))
+	  (when (and (= (funcall heuristica estado-a-escolher) 0) (funcall (problema-solucao problema) estado-a-escolher))(return lista))
+	  (setf menor-custo infinity)
 	  (setf estado estado-a-escolher))))
 
 
@@ -449,5 +454,10 @@
 ;;;  - lista-pecas -> lista de pecas por colocar 
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
-(defun procura-best (tabuleiro lista-pecas)
-	)
+;;;(defun procura-best (tabuleiro lista-pecas))
+
+
+
+
+
+(load "utils.fas")
