@@ -401,25 +401,26 @@
 ;;;         Procuras
 ;;; ======================== ;;;
 
-;;; Depth first search algorithm
-;;; Devolve uma lista de estados comecando no estado inicial passado ate ao estado solucao
-(defun dfs (problema estado lista)
-  (desenha-estado estado)
-  (if (funcall (problema-solucao problema) estado)
-    (list estado))
-  (dolist (accao (reverse (funcall (problema-accoes problema) estado)))
-	(if (null accao) (return NIL)
-	 (let ((estado-retornado (first (dfs problema (funcall (problema-resultado problema) estado accao) lista))))
-      (if (not (null estado-retornado)) (return (append (list estado) lista)) NIL)))))
-
 ;;; -----------------------------------------------------------
 ;;; Procura uma solucao para resolver o problema (Profundidade primeiro)
 ;;;  - problema
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-pp (problema)
-  (let ((lista-accoes (list)))
-	(dfs problema (problema-estado-inicial problema) lista-accoes)))
+  (let ((estado (problema-estado-inicial problema))
+  		(lista-estados (list estado)))
+  (loop
+  	(let ((accoes (funcall (problema-accoes problema) estado))
+  		(estado (first (lista-estados))))
+  	(if (not (null accoes))
+  		(progn 
+  			(setf lista-estados (rest lista-estados))
+  			(if (funcall (problema-solucao problema) estado)
+  				(return lista-estados)
+  			(dolist (accao accoes) 
+  				(push lista-estados (funcall (problema-resultado problema) estado accao)))))
+  		(setf lista-estados (rest lista-estados)))))))
+
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
