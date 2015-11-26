@@ -272,6 +272,7 @@
 ;;; --------------------------------------------
 (defun accoes (estado)
   "Compoe a lista de accoes possiveis"
+  (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL
   (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
     ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
     (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
@@ -280,7 +281,7 @@
       ; analisa todas as colunas para cada difente rotacao
       (dotimes (coluna *COLUNAS*)
         ; cria a lista de accoes com todas as acceos possiveis
-        (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna)))))))
+        (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna))))))))
 
 ;;; Desenha um peca num tabuleiro
 ;;; - tabuleiro -> tabuleiro onde desenhar
@@ -403,14 +404,14 @@
 
 ;;; Depth first search algorithm
 ;;; Devolve uma lista de estados comecando no estado inicial passado ate ao estado solucao
-(defun dfs (problema estado lista)
-  (desenha-estado estado)
-  (if (funcall (problema-solucao problema) estado)
-    (list estado))
-  (dolist (accao (reverse (funcall (problema-accoes problema) estado)))
-	(if (null accao) (return NIL)
-	 (let ((estado-retornado (first (dfs problema (funcall (problema-resultado problema) estado accao) lista))))
-      (if (not (null estado-retornado)) (return (append (list estado) lista)) NIL)))))
+(defun dfs (problema estado)
+ (let ((lista NIL)
+       (if (funcall (problema-solucao problema) estado)
+	(return (list T)))
+       (dolist (accao (funcall (problema-accoes problema) estado)) 
+	(setf lista (dfs problema (funcall (problema-resultado problema) estado accao)))
+	(if (first lista)
+	 (return (append lista accao)))))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura uma solucao para resolver o problema (Profundidade primeiro)
@@ -418,8 +419,7 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-pp (problema)
-  (let ((lista-accoes (list)))
-	(dfs problema (problema-estado-inicial problema) lista-accoes)))
+	(rest (dfs problema (problema-estado-inicial problema))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
