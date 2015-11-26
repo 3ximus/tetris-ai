@@ -427,8 +427,8 @@
 ;;;                  a partir desse estado ate ao melhor estado objectivo
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
-(defun procura-A* (problema heuristica)
-	)
+; (defun procura-A* (problema heuristica)
+; 	)
 
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
@@ -436,8 +436,8 @@
 ;;;  - lista-pecas -> lista de pecas por colocar 
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
-(defun procura-best (tabuleiro lista-pecas)
-	)
+; (defun procura-best (tabuleiro lista-pecas)
+; 	)
 
 (load "utils.fas")
 
