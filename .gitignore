@@ -2,4 +2,4 @@
 *.fas
 *.lib
 .DS_Store
-utils.lisp
+*.swp

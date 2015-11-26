@@ -7,7 +7,6 @@
 ;                                                   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;(load "utils.fas")
 
 ;;; ======================== ;;;
 ;;;       Tipo Accao
@@ -203,6 +202,11 @@
 ;;; ======================== ;;;
 
 ;;; Estrutura do tipo problema
+;;;  - estado-inicial -> estado inicial do problema
+;;;  - solucao -> funcao que devolve T se estado recebido for solucao
+;;;  - accoes -> funcao que retorna lista de accoes
+;;;  - resultado -> funcao que aplica uma accao a um estado
+;;;  - custo-caminho -> funcao que recebe estado e retorna o custo do caminho desde o estado inicial
 (defstruct problema (estado-inicial (make-estado)) (solucao NIL) 
 		    (accoes NIL) (resultado NIL) (custo-caminho NIL))
 
@@ -271,16 +275,17 @@
 ;;; Devolve uma lista de accoes possiveis
 ;;; --------------------------------------------
 (defun accoes (estado)
-  "Compoe a lista de accoes possiveis"
+ "Compoe a lista de accoes possiveis"
+ (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL
   (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
-    ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
-    (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
-          ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
-    (dotimes (rotacao (+ max-rotacao 1) lista-accoes)
-      ; analisa todas as colunas para cada difente rotacao
-      (dotimes (coluna *COLUNAS*)
-        ; cria a lista de accoes com todas as acceos possiveis
-        (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna)))))))
+   ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
+   (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
+    ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
+   (dotimes (rotacao (+ max-rotacao 1) lista-accoes)
+    ; analisa todas as colunas para cada difente rotacao
+    (dotimes (coluna *COLUNAS*)
+     ; cria a lista de accoes com todas as acceos possiveis
+       (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna))))))))
 
 ;;; Desenha um peca num tabuleiro
 ;;; - tabuleiro -> tabuleiro onde desenhar
@@ -429,7 +434,30 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-A* (problema heuristica)
-	)
+  (let* ((estado (problema-estado-inicial problema))
+	(lista NIL)
+	(infinity 99999999)
+	(menor-custo infinity)
+	(accao-a-escolher)
+	(estado-a-escolher NIL))
+	(loop 
+	  ;;; iterar sobre todos os possiveis estados
+	  (dolist (accao (funcall (problema-accoes problema) estado))
+	    ;;; calcula estdo e custos
+	    (let* ((estado-resultado (funcall (problema-resultado problema) estado accao))
+		   (custo (funcall (problema-custo-caminho problema) estado-resultado))
+		   (custo-total (+ custo (funcall heuristica estado-resultado))))
+			(format T "~D/~D     ~S      ~S~%" custo (estado-pontos estado-resultado) (estado-pecas-colocadas estado-resultado)  accao)
+		   ;;; se custo calculado for minimo escolhemos esse como melhor estado
+		   (if (<= custo-total menor-custo) (progn (setf menor-custo custo) (setf estado-a-escolher estado-resultado)(setf accao-a-escolher accao)))))
+	  ;;; adiciona melhor estado a lista e prepara proxima iteracao caso a heuristica deste estado nao seja 0, se for retorna da funcao
+(format T "------------------------------------~%" (estado-pecas-por-colocar estado-a-escolher))
+	  (setf lista (append lista (list accao-a-escolher)))
+	  (when (and (= (funcall heuristica estado-a-escolher) 0) (funcall (problema-solucao problema) estado-a-escolher))(return lista))
+	  (setf menor-custo infinity)
+	  (setf estado estado-a-escolher))))
+
+
 
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
@@ -437,6 +465,10 @@
 ;;;  - lista-pecas -> lista de pecas por colocar 
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
-(defun procura-best (tabuleiro lista-pecas)
-	)
+;;;(defun procura-best (tabuleiro lista-pecas))
 
+
+
+
+
+(load "utils.fas")
