@@ -407,16 +407,12 @@
 (defun dfs (problema estado)
   (let ((lista NIL)
        (accoes (reverse (funcall (problema-accoes problema) estado))))
-  (if (equal (funcall (problema-solucao problema) estado) T)
-    (progn
-    (format T "Solucao~%")  
-    (list T))
+  (if (funcall (problema-solucao problema) estado) 
+    (list T)
   (dolist (accao accoes)
     (setf lista (dfs problema (funcall (problema-resultado problema) estado accao)))
-    (if (equal (first lista) T)
-      (progn
-      (format T "returning~%") 
-      (return (append lista (list accao)))))))))
+    (if (first lista)
+      (return (append lista (list accao))))))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura uma solucao para resolver o problema (Profundidade primeiro)
