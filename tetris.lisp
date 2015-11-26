@@ -294,11 +294,9 @@
    (dotimes (peca-coluna (array-dimension peca-array 1))
      (if (and (valida-linha (+ peca-linha linha)) (aref peca-array peca-linha peca-coluna))
       (progn
-      ; insere a peca com segundo offset calculado
+      ; insere a peca segundo offset calculado
        (setf (aref (tabuleiro-data tabuleiro) (+ linha peca-linha) (+ coluna peca-coluna))
-        (aref peca-array peca-linha peca-coluna))
-
-       )))))
+        (aref peca-array peca-linha peca-coluna)))))))
 
 
 ;;; Descobre base de uma coluna de uma peca
@@ -406,11 +404,13 @@
 ;;; Depth first search algorithm
 ;;; Devolve uma lista de estados comecando no estado inicial passado ate ao estado solucao
 (defun dfs (problema estado lista)
-	(if (funcall (problema-solucao problema) estado)
-		(list estado))
-	(dolist (accao (funcall (problema-accoes problema) estado))
-		(let ((estado-retornado (dfs problema (funcall (problema-resultado problema) estado accao) lista)))
-			(if (not (null estado-retornado)) (return (append (list estado) lista)) NIL))))
+  (desenha-estado estado)
+  (if (funcall (problema-solucao problema) estado)
+    (list estado))
+  (dolist (accao (reverse (funcall (problema-accoes problema) estado)))
+	(if (null accao) (return NIL)
+	 (let ((estado-retornado (first (dfs problema (funcall (problema-resultado problema) estado accao) lista))))
+      (if (not (null estado-retornado)) (return (append (list estado) lista)) NIL)))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura uma solucao para resolver o problema (Profundidade primeiro)
