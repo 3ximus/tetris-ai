@@ -442,10 +442,34 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 
-(defun procura-best (array-tab lista-pecas))
+(defun procura-best (array-tab lista-pecas)
+  (let* ((estado (make-estado :pecas-por-colocar lista-pecas :tabuleiro (make-tabuleiro :data array-tab))))
+        (best estado)))
+
+(defun best (estado)
+  (let ((accoes-best nil)
+        (estado-best nil)
+        (estado-a-expandir estado))
+    (loop
+      (let ((max-custo -99999)
+            (lista-accoes nil))
+      (when (solucao estado-a-expandir) (return accoes-best))
+      (dolist (accao (accoes estado-a-expandir))
+        (let* ((estado-corrente (resultado estado-a-expandir accao))
+               (custo-corrente (heuristica (estado-tabuleiro estado-corrente))))
+        (if (< max-custo custo-corrente)
+          (progn
+          (setf max-custo custo-corrente)
+          (push accao lista-accoes)
+          (setf estado-best estado-corrente)))))
+      (push (first lista-accoes) accoes-best)
+      (setf estado-a-expandir estado-best)))))
 
 
 ;;; Funcoes heuristicas
+;;; Parametros provinientes do Genetic Algorithm
+;;; Maximizam o numero de linhas completas
+;;; Desta forma e possivel escolher a melhor accao a aplicar, escolhendo o maximo valor possivel desta heuristica
 (defparameter *A* -0.510066)
 (defparameter *B*  0.760666)
 (defparameter *C* -0.35663)
@@ -506,9 +530,9 @@
       (setf diferenca-alturas (abs (- (tabuleiro-altura-coluna tabuleiro coluna) (tabuleiro-altura-coluna tabuleiro (+ coluna 1)))))
       (setf soma (+ soma diferenca-alturas)))))
 
-;;; heuristica
+;;; qualidade
 ;;; A x aggregateHeigth + B x completelines + C x holes + D x bumpiness
 (defun heuristica (tabuleiro)
   (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
 
-;;(load "utils.fas")
+(load "utils.fas")
