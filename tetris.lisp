@@ -447,6 +447,7 @@
 
 ;;; Funcoes heuristicas
 
+;;; h-1
 ;;; Soma as alturas de um tabuleiro
 ;;; - tabuleiro
 ;;; Devolve a soma das alturas de cada coluna do tabuleiro
@@ -457,6 +458,7 @@
     ;(format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna))
     (setf soma-alturas (+ soma-alturas (tabuleiro-altura-coluna tabuleiro coluna))))))
 
+;;; h-2
 ;;; linhas-completas-tabuleiro
 ;;; devolve o numero de linhas completas de um tabuleiro
 ;;; Queremos maximizar este valor
@@ -466,9 +468,11 @@
       (if (tabuleiro-linha-completa-p tabuleiro linha)
         (incf linhas-completas)))))
 
+;;; h-3
 ;;; buracos-tabuleiro
 ;;; devolve o numero de buracos no tabuleiro
 ;;; Um buraco e qql posicao vazia sendo que tem pelo menos uma posicao preenchida acimda de si, na mesma coluna.
+;;; Queremos minimizar este valor
 (defun buracos-tabuleiro (tabuleiro)
   (let((buracos 0)
       (buracos-potenciais 0))
@@ -487,5 +491,15 @@
           (setf buracos (+ buracos buracos-potenciais))
           (setf buracos-potenciais 0))))))))
 
+;;; h-4
+;;; bumpiness-tabuleiro
+;;; devolve a variacao entre a altura das colunas de um tabuleiro
+;;; Queremos minimizar este valor
+(defun bumpiness-tabuleiro (tabuleiro)
+  (let ((soma 0)
+       (diferenca-alturas 0))
+    (dotimes (coluna (- *COLUNAS* 1) soma)
+      (setf diferenca-alturas (abs (- (tabuleiro-altura-coluna tabuleiro coluna) (tabuleiro-altura-coluna tabuleiro (+ coluna 1)))))
+      (setf soma (+ soma diferenca-alturas)))))
 
 ;;(load "utils.fas")
