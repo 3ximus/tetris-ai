@@ -446,34 +446,38 @@
 
 
 ;;; Funcoes heuristicas
+(defparameter *A* -0.510066)
+(defparameter *B*  0.760666)
+(defparameter *C* -0.35663)
+(defparameter *D* -0.184483)
 
 ;;; h-1
 ;;; Soma as alturas de um tabuleiro
 ;;; - tabuleiro
 ;;; Devolve a soma das alturas de cada coluna do tabuleiro
 ;;; Queremos minimizar este valor
-(defun soma-alturas-tabuleiro (tabuleiro)
-  (let ((soma-alturas 0))
-  (dotimes (coluna *COLUNAS* soma-alturas)
+(defun soma-alturas (tabuleiro)
+  (let ((soma 0))
+  (dotimes (coluna *COLUNAS* soma)
     ;(format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna))
-    (setf soma-alturas (+ soma-alturas (tabuleiro-altura-coluna tabuleiro coluna))))))
+    (setf soma (+ soma (tabuleiro-altura-coluna tabuleiro coluna))))))
 
 ;;; h-2
 ;;; linhas-completas-tabuleiro
 ;;; devolve o numero de linhas completas de um tabuleiro
 ;;; Queremos maximizar este valor
-(defun linhas-completas-tabuleiro (tabuleiro)
-  (let ((linhas-completas 0))
-    (dotimes (linha *LINHAS* linhas-completas)
+(defun linhas-completas (tabuleiro)
+  (let ((l-completas 0))
+    (dotimes (linha *LINHAS* l-completas)
       (if (tabuleiro-linha-completa-p tabuleiro linha)
-        (incf linhas-completas)))))
+        (incf l-completas)))))
 
 ;;; h-3
-;;; buracos-tabuleiro
+;;; buracos
 ;;; devolve o numero de buracos no tabuleiro
 ;;; Um buraco e qql posicao vazia sendo que tem pelo menos uma posicao preenchida acimda de si, na mesma coluna.
 ;;; Queremos minimizar este valor
-(defun buracos-tabuleiro (tabuleiro)
+(defun buracos (tabuleiro)
   (let((buracos 0)
       (buracos-potenciais 0))
   (dotimes (coluna *COLUNAS* buracos)
@@ -492,14 +496,19 @@
           (setf buracos-potenciais 0))))))))
 
 ;;; h-4
-;;; bumpiness-tabuleiro
+;;; bumpiness
 ;;; devolve a variacao entre a altura das colunas de um tabuleiro
 ;;; Queremos minimizar este valor
-(defun bumpiness-tabuleiro (tabuleiro)
+(defun bumpiness (tabuleiro)
   (let ((soma 0)
        (diferenca-alturas 0))
     (dotimes (coluna (- *COLUNAS* 1) soma)
       (setf diferenca-alturas (abs (- (tabuleiro-altura-coluna tabuleiro coluna) (tabuleiro-altura-coluna tabuleiro (+ coluna 1)))))
       (setf soma (+ soma diferenca-alturas)))))
+
+;;; heuristica
+;;; A x aggregateHeigth + B x completelines + C x holes + D x bumpiness
+(defun heuristica (tabuleiro)
+  (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
 
 ;;(load "utils.fas")
