@@ -454,9 +454,17 @@
 (defun soma-alturas-tabuleiro (tabuleiro)
   (let ((soma-alturas 0))
   (dotimes (coluna *COLUNAS* soma-alturas)
-    (format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna))
+    (format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna)) ;; fixe oara fazer DEBUG ---> retirar na versao final
     (setf soma-alturas (+ soma-alturas (tabuleiro-altura-coluna tabuleiro coluna))))))
 
+;;; linhas-completas-tabuleiro
+;;; devolve o numero de linhas completas de um tabuleiro
+;;; queremos maximizar este valor
+(defun linhas-completas-tabuleiro (tabuleiro)
+  (let ((linhas-completas 0))
+    (dotimes (linha *LINHAS* linhas-completas)
+      (if (tabuleiro-linha-completa-p tabuleiro linha)
+        (incf linhas-completas)))))
 
 
 
