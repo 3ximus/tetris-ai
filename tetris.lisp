@@ -454,18 +454,38 @@
 (defun soma-alturas-tabuleiro (tabuleiro)
   (let ((soma-alturas 0))
   (dotimes (coluna *COLUNAS* soma-alturas)
-    (format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna)) ;; fixe oara fazer DEBUG ---> retirar na versao final
+    ;(format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna))
     (setf soma-alturas (+ soma-alturas (tabuleiro-altura-coluna tabuleiro coluna))))))
 
 ;;; linhas-completas-tabuleiro
 ;;; devolve o numero de linhas completas de um tabuleiro
-;;; queremos maximizar este valor
+;;; Queremos maximizar este valor
 (defun linhas-completas-tabuleiro (tabuleiro)
   (let ((linhas-completas 0))
     (dotimes (linha *LINHAS* linhas-completas)
       (if (tabuleiro-linha-completa-p tabuleiro linha)
         (incf linhas-completas)))))
 
+;;; buracos-tabuleiro
+;;; devolve o numero de buracos no tabuleiro
+;;; Um buraco e qql posicao vazia sendo que tem pelo menos uma posicao preenchida acimda de si, na mesma coluna.
+(defun buracos-tabuleiro (tabuleiro)
+  (let((buracos 0)
+      (buracos-potenciais 0))
+  (dotimes (coluna *COLUNAS* buracos)
+    (setf buracos-potenciais 0)
+    ;(format T "-------coluna [~D]:------- [RESET] ~%" (+ coluna 1))
+    (dotimes (linha *LINHAS* buracos)
+      ;(format T "linha [~D]: $ " (+ linha 1))
+      (if (not (tabuleiro-preenchido-p tabuleiro linha coluna))
+        (progn
+        ;(format T "incrementou potenciais~%") 
+        (incf buracos-potenciais))
+        (if (not (= buracos-potenciais 0))
+          (progn
+          ;(format T "atualiza buracos~%") 
+          (setf buracos (+ buracos buracos-potenciais))
+          (setf buracos-potenciais 0))))))))
 
 
 ;;(load "utils.fas")
