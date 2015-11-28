@@ -2,7 +2,7 @@
 (ignore-value (dotimes (linha 16) (dotimes (coluna 7) (tabuleiro-preenche! t1 linha coluna))))
 (setf estado1 (make-estado :pontos 0 :tabuleiro t1 :pecas-colocadas () :pecas-por-colocar '(l j)))
 (desenha-estado estado1)
-(ignore-value (setf estado2 (resultado estado1 '(7 . #2A((T T T)(NIL NIL T))))))
+(ignore-value (setf estado2 (resultado estado1 '(7 . #2A((NIL T)(NIL T)(T T))))))
 (desenha-estado estado2)
 (ignore-value (setf estado3 (resultado estado2 '(7 . #2A((T T T)(NIL NIL T))))))
 (desenha-estado estado3)

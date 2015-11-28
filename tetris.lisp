@@ -398,8 +398,8 @@
     (dolist (peca (estado-pecas-colocadas estado) max-pontos)
       ; por cada peca incrementa pontos maximos possiveis
       (cond ((equal peca 'i) (incf max-pontos 800))
-        ((or (equal peca 'j)(equal peca 'l)) (incf max-pontos 500))
-        ((or (equal peca 's)(equal peca 'z)(equal peca 't)(equal peca 'o)) (incf max-pontos 300))))
+	    ((or (equal peca 'j)(equal peca 'l)) (incf max-pontos 500))
+	    ((or (equal peca 's)(equal peca 'z)(equal peca 't)(equal peca 'o)) (incf max-pontos 300))))
     ; calcula a diferenca entre pontos possiveis e obtidos
   (- max-pontos (estado-pontos estado))))
 
@@ -425,29 +425,31 @@
 ;;; -----------------------------------------------------------
 (defun procura-A* (problema heuristica)
   (let* ((estado (problema-estado-inicial problema))
-	       (lista NIL)
-	       (infinity 99999999)
-	       (menor-custo infinity)
-	       (accao-a-escolher NIL)
-	       (estado-a-escolher estado))
-	(loop
-    (when (funcall (problema-solucao problema) estado-a-escolher) (return lista)) 
-	  ;;; iterar sobre todos os possiveis estados
-	  (dolist (accao (funcall (problema-accoes problema) estado))
-	    ;;; calcula estdo e custos
-	    (let* ((estado-resultado (funcall (problema-resultado problema) estado accao))
-		         (custo (+ (funcall (problema-custo-caminho problema) estado-resultado) (funcall heuristica estado-resultado))))
-      ;(format T "custo: ~D || accao: ~S~%" custo accao)
-		  ;;; se custo calculado for minimo escolhemos esse como melhor estado
-		  (if (<= custo menor-custo) 
-        (progn 
-        (setf menor-custo custo) 
-        (setf estado-a-escolher estado-resultado)
-        (push accao accao-a-escolher)))))
-	  ;;; adiciona melhor accao a lista e prepara proxima iteracao
-	  (setf lista (append lista (list (first accao-a-escolher))))
-	  (setf menor-custo infinity)
-	  (setf estado estado-a-escolher))))
+	 (lista NIL)
+	 (infinity 99999999)
+	 (menor-custo infinity)
+	 (accao-a-escolher NIL)
+	 (estado-a-escolher NIL))
+    (loop
+      (when (funcall (problema-solucao problema) estado) (return lista))
+      ;;; iterar sobre todos os possiveis estados
+      (dolist (accao (funcall (problema-accoes problema) estado))
+	;;; calcula estado e custos
+	(let* ((estado-resultado (funcall (problema-resultado problema) estado accao))
+	       (custo (+ (funcall (problema-custo-caminho problema) estado-resultado) (funcall heuristica estado-resultado))))
+	  (format T "custo: ~D || accao: ~S~%" custo accao)
+	  ;;; se custo calculado for minimo escolhemos esse como melhor estado
+	  (if (<= custo menor-custo)
+	    (progn 
+	      ;;; possivel estado a escolher, guardar os seus valores
+	      (setf menor-custo custo)
+	      (setf estado-a-escolher estado-resultado)
+	      (setf accao-a-escolher accao)))))
+      ;;; adiciona melhor accao a lista e prepara proxima iteracao
+      (format T "-----~%")
+      (setf lista (append lista (list accao-a-escolher)))
+      (setf menor-custo infinity)
+      (setf estado estado-a-escolher))))
 
 
 
@@ -463,4 +465,4 @@
 
 
 
-(load "utils.fas")
+;(load "utils.fas")
