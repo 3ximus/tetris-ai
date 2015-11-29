@@ -429,8 +429,20 @@
   (reverse (rest (dfs problema (problema-estado-inicial problema)))))
 
 ;;; Insere nodes numa lista de forma ordenada pelo custo
-(insere-elemento (lista node)
-		 )
+;;;  - lista
+;;;  - node -> estrutura com o conteudo: estado, custo , accoes
+;;; Devolve a nova lista calculada
+(defun insere-elemento (lista node)
+    (let ((lista-a-retornar (list)))
+      (loop 
+	(let ((elem (first lista)))
+	  ; se chegamos ao fim da lista
+	  (if (null elem) (return (append lista-a-retornar (list node))))
+	  (if (< (node-custo node) (node-custo elem))
+	    (return (append lista-a-retornar (list node elem) (rest lista)))
+	    (progn ; else
+	      (append lista-a-retornar (list elem))
+	      (setf lista (rest lista))))))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
@@ -438,33 +450,31 @@
 ;;;  - heuristica -> funcao que recebe um estado e devolve um numero que representa o custo-qualidade
 ;;;                  a partir desse estado ate ao melhor estado objectivo
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
-----------------------------------------
+;;; -----------------------------------------------------------
 (defun procura-A* (problema heuristica)
   ;estados-abertos e uma lista em que cada elemento e uma lista com estado, custo desse estado, e caminho ate esse estado
   (defstruct node (estado NIL) (custo NIL) (caminho NIL))
-  (let ((estados-abertos (list (make-node :estado (problema-estado-inicial problema) :custo 0 :caminho NIL)))
-	(estado-otimo (make-node :estado NIL  :custo 0 :caminho (list)))
+  (let ((lista-estados-abertos (list (make-node :estado (problema-estado-inicial problema) :custo 0 :caminho NIL)))
+	(estado-otimo (make-node :estado NIL :custo 999999 :caminho (list)))
 	(estado-a-avaliar))
-
     (loop
       ; se nao houver mais estados para analisar retornamos o valor do caminho no estado final
-      (when (null estados-abertos) (return (node-caminho estado-otimo)))
+      (when (null lista-estados-abertos) (return (node-caminho estado-otimo)))
       ; retira da lista o estado com menor custo (primeiro)
-      (let ((estado-a-avaliar (first  estados-abertos))
-	    (accoes (funcall (problema-accoes problema) (node-estado estado-a-avaliar))))
+      (let* ((estado-a-avaliar (first lista-estados-abertos))
+	     (accoes (funcall (problema-accoes problema) (node-estado estado-a-avaliar))))
 	; caso seja solucao e heuristica seja 0 ou nao haja accoes
-	(if (or (and (funcall (problema-solucao problema) (node-estado estado-a-avaliar)) (= (funcall (heuristica (node-estado estado-a-avaliar))) 0)) (null accoes))
+	(if (or (and (funcall (problema-solucao problema) (node-estado estado-a-avaliar)) (= (funcall heuristica (node-estado estado-a-avaliar)) 0)) (null accoes))
 	  (if (<= (node-custo estado-a-avaliar) (node-custo estado-otimo))
 	    (setf estado-otimo estado-a-avaliar)))
 	; remove 1o elemento - estado-a-avaliar
-	(setf (lista-abertos (rest lista-abertos)))
+	(setf lista-estados-abertos (rest lista-estados-abertos))
 	(dolist (accao accoes)
 	  ;descobre novos estados e adiciona-os a lista de abertos
 	  (let* ((estado-resultante (funcall (problema-resultado problema) (node-estado estado-a-avaliar) accao))
-		 (custo  (+ (funcall (problema-custo-caminho problema) estado-resultante) (funcall heuristica-estado resultante)))) 
-	    (setf lista-abertos (insere-elemento lista-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho estado-a-avaliar) (list (accao))))))))))))
-
-
+		 (custo  (+ (funcall (problema-custo-caminho problema) estado-resultante) (funcall heuristica estado-resultante)))) 
+	    ; insere um novo elemento na lista de abertos em que os estado e o resultante da accao, o custo e o calculado para este estado e o caminho contem a accao que originou este estado
+	    (setf lista-estados-abertos (insere-elemento lista-estados-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho estado-a-avaliar) (list accao)))))))))))
 
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
