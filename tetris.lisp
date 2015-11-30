@@ -439,15 +439,15 @@
       (let ((elem (first lista-a-iterar)))
 	; se chegamos ao fim da lista
 	(if (null elem) (return (append lista-a-retornar (list node))))
-	(format T "custo node ~D custo elem ~D     " (node-custo node) (node-custo elem))
+	;(format T "custo node ~D custo elem ~D     " (node-custo node) (node-custo elem))
 	(if (< (node-custo node) (node-custo elem))
 	  ; then
 	  (progn 
-	    (format T "here~%")
+	    ;(format T "here~%")
 (return (append lista-a-retornar (list node elem) (rest lista-a-iterar))))
 	  ;else
 	  (progn
-	    (format T "there~%")
+	    ;(format T "there~%")
 	    (append lista-a-retornar (list elem))
 	    (setf lista-a-iterar (rest lista-a-iterar))))))))
 
@@ -469,7 +469,7 @@
       ; retira da lista o estado com menor custo (primeiro)
       (let* ((estado-a-avaliar (first lista-estados-abertos))
 	     (accoes (funcall (problema-accoes problema) (node-estado estado-a-avaliar))))
-	(format T "CUSTO:  ~D   || ACCAO  ~S~%" (node-custo estado-a-avaliar) (node-caminho estado-a-avaliar))
+	;(format T "CUSTO:  ~D   || ACCAO  ~S~%" (node-custo estado-a-avaliar) (node-caminho estado-a-avaliar))
 	; caso seja solucao e heuristica seja 0 ou nao haja accoes
 	(if (or (and (funcall (problema-solucao problema) (node-estado estado-a-avaliar)) (= (funcall heuristica (node-estado estado-a-avaliar)) 0)))
 	    ; then
