@@ -70,23 +70,23 @@
   (let ((max 0))
     (do* ((n (- *LINHAS* 1) (- n 1))) ((or (not (= max 0)) (= n -1)))
       (if (tabuleiro-preenchido-p tabuleiro n coluna)
-          (setf max (+ n 1))))
-      max))
- 
+	(setf max (+ n 1))))
+    max))
+
 ;;; --------------------------------------------
 ;;; Verifica se (linha) esta completamente preenchida.
 ;;;  --------------------------------------------
 (defun tabuleiro-linha-completa-p (tabuleiro linha)
   (dotimes (coluna *COLUNAS* T)
     (when (equal (tabuleiro-preenchido-p tabuleiro linha coluna) NIL)
-	(return NIL))))
+      (return NIL))))
 
 ;;; --------------------------------------------
 ;;; Preenche a posicao (linha coluna).
 ;;; --------------------------------------------
 (defun tabuleiro-preenche! (tabuleiro linha coluna)
   (if (and (valida-linha linha) (valida-coluna coluna))
-      (setf (aref (tabuleiro-data tabuleiro) linha coluna) T)))
+    (setf (aref (tabuleiro-data tabuleiro) linha coluna) T)))
 
 ;;; --------------------------------------------
 ;;; Remove (linha) de um tabuleiro.
@@ -103,7 +103,7 @@
 ;;; --------------------------------------------
 (defun tabuleiro-linha-vazia (tab linha)
   (dotimes (coluna *COLUNAS* T)
-      (setf (aref (tabuleiro-data tab) linha coluna) NIL)))
+    (setf (aref (tabuleiro-data tab) linha coluna) NIL)))
 
 ;;; --------------------------------------------
 ;;; Verifica se a linha do topo do tabuleiro esta preenchida
@@ -120,7 +120,7 @@
   (dotimes (linha *LINHAS* T)
     (dotimes (coluna *COLUNAS* T)
       (if (not (equal (aref (tabuleiro-data tab1) linha coluna) (aref (tabuleiro-data tab2) linha coluna)))
-        (return-from tabuleiros-iguais-p NIL)))))
+	(return-from tabuleiros-iguais-p NIL)))))
 
 ;;; --------------------------------------------
 ;;; Cria um array com o conteudo do tabuleiro
@@ -138,24 +138,24 @@
 (defun valida-linha (linha)
   "Testa se linha existe"
   (if (or(> linha (- *LINHAS* 1))(< linha 0))
-      NIL
+    NIL
     T))
 
 ;;; Testa se coluna existe
 (defun valida-coluna (coluna)
   "Testa se coluna existe"
   (if (or(> coluna (- *COLUNAS* 1))(< coluna 0))
-      NIL
+    NIL
     T))
 
 ;;; Faz a copia de um array
 (defun copia-array (array)
   "Copia um array"
   (let* ((dimensions (array-dimensions array))
-         (new-array (make-array dimensions)))
+	 (new-array (make-array dimensions)))
     (dotimes (i (array-total-size array))
       (setf (row-major-aref new-array i)
-            (row-major-aref array i)))
+	    (row-major-aref array i)))
     new-array))
 
 ;;; ======================== ;;;
@@ -171,9 +171,9 @@
 (defun copia-estado (estado)
   "Copia um estado"
   (make-estado :pontos (estado-pontos estado) 
-               :pecas-por-colocar (copy-list(estado-pecas-por-colocar estado))
-               :pecas-colocadas (copy-list (estado-pecas-colocadas estado)) 
-               :tabuleiro (copia-tabuleiro (estado-tabuleiro estado))))
+	       :pecas-por-colocar (copy-list(estado-pecas-por-colocar estado))
+	       :pecas-colocadas (copy-list (estado-pecas-colocadas estado)) 
+	       :tabuleiro (copia-tabuleiro (estado-tabuleiro estado))))
 
 ;;; -----------------------------------------------------------
 ;;; Verifica se 2 estados sao iguais
@@ -181,9 +181,9 @@
 (defun estados-iguais-p (estado-incial estado-final)
   "Verifica se 2 estados sao iguais"
   (if (and (= (estado-pontos estado-incial) (estado-pontos estado-final))
-           (equal (estado-pecas-por-colocar estado-incial) (estado-pecas-por-colocar estado-final))
-           (equal (estado-pecas-colocadas estado-incial) (estado-pecas-colocadas estado-final))
-           (tabuleiros-iguais-p (estado-tabuleiro estado-incial) (estado-tabuleiro estado-final)))
+	   (equal (estado-pecas-por-colocar estado-incial) (estado-pecas-por-colocar estado-final))
+	   (equal (estado-pecas-colocadas estado-incial) (estado-pecas-colocadas estado-final))
+	   (tabuleiros-iguais-p (estado-tabuleiro estado-incial) (estado-tabuleiro estado-final)))
     T
     NIL))
 
@@ -193,7 +193,7 @@
 (defun estado-final-p (estado)
   "Verifica se estado e um estado final de um jogo"
   (if (or (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
-          (null (estado-pecas-por-colocar estado)))
+	  (null (estado-pecas-por-colocar estado)))
     T
     NIL))
 
@@ -208,7 +208,7 @@
 ;;;  - resultado -> funcao que aplica uma accao a um estado
 ;;;  - custo-caminho -> funcao que recebe estado e retorna o custo do caminho desde o estado inicial
 (defstruct problema (estado-inicial (make-estado)) (solucao NIL) 
-		    (accoes NIL) (resultado NIL) (custo-caminho NIL))
+  (accoes NIL) (resultado NIL) (custo-caminho NIL))
 
 ;;; ======================== ;;;
 ;;;    Funcoes de Procura
@@ -275,17 +275,17 @@
 ;;; Devolve uma lista de accoes possiveis
 ;;; --------------------------------------------
 (defun accoes (estado)
- "Compoe a lista de accoes possiveis"
- (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL
-  (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
-   ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
-   (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
-    ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
-   (dotimes (rotacao (+ max-rotacao 1) lista-accoes)
-    ; analisa todas as colunas para cada difente rotacao
-    (dotimes (coluna *COLUNAS*)
-     ; cria a lista de accoes com todas as acceos possiveis
-       (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna))))))))
+  "Compoe a lista de accoes possiveis"
+  (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL
+    (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
+      ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
+      (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
+	    ((or (equal peca 'l)(equal peca 'j)(equal peca 't)) (setf max-rotacao 3)))
+      (dotimes (rotacao (+ max-rotacao 1) lista-accoes)
+	; analisa todas as colunas para cada difente rotacao
+	(dotimes (coluna *COLUNAS*)
+	  ; cria a lista de accoes com todas as acceos possiveis
+	  (setf lista-accoes (append lista-accoes (identifica-accao peca rotacao coluna))))))))
 
 ;;; Desenha um peca num tabuleiro
 ;;; - tabuleiro -> tabuleiro onde desenhar
@@ -295,13 +295,13 @@
 ;;; Nao devolve nada
 (defun desenha-peca-tabuleiro (tabuleiro peca-array linha coluna)
   "Desenha uma peca numa certa posicao num tabuleiro"
- (dotimes (peca-linha (array-dimension peca-array 0))
-   (dotimes (peca-coluna (array-dimension peca-array 1))
-     (if (and (valida-linha (+ peca-linha linha)) (aref peca-array peca-linha peca-coluna))
-      (progn
-      ; insere a peca segundo offset calculado
-       (setf (aref (tabuleiro-data tabuleiro) (+ linha peca-linha) (+ coluna peca-coluna))
-        (aref peca-array peca-linha peca-coluna)))))))
+  (dotimes (peca-linha (array-dimension peca-array 0))
+    (dotimes (peca-coluna (array-dimension peca-array 1))
+      (if (and (valida-linha (+ peca-linha linha)) (aref peca-array peca-linha peca-coluna))
+	(progn
+	  ; insere a peca segundo offset calculado
+	  (setf (aref (tabuleiro-data tabuleiro) (+ linha peca-linha) (+ coluna peca-coluna))
+		(aref peca-array peca-linha peca-coluna)))))))
 
 
 ;;; Descobre base de uma coluna de uma peca
@@ -310,8 +310,8 @@
 ;;; Devolve linha mais abaixo na coluna da peca
 (defun base-peca-coluna (peca-array coluna)
   "Descobre base de uma coluna de uma peca"
- (dotimes (linha (array-dimension peca-array 0))
-   (if (aref peca-array linha coluna)(return linha))))
+  (dotimes (linha (array-dimension peca-array 0))
+    (if (aref peca-array linha coluna)(return linha))))
 
 ;;; Insere uma peca num tabuleiro
 ;;; - tabuleiro -> tabuleiro onde inserir a peca
@@ -325,15 +325,15 @@
     (let ((linha-base 0)(linha-max 0)(linha-a-inserir 0))
       ; percorre as varias colunas de uma peca
       (dotimes (peca-coluna (array-dimension peca-array 1))
-        ; define linha-max como sendo a linha maxima da coluna a analizar (coluna + coluna da peca)
-        (setf linha-max (tabuleiro-altura-coluna tabuleiro (+ coluna peca-coluna)))
-        ; define a linha-base como sendo a diferenca entre a linha-max e a linha mais abaixo da peca (na coluna a analizar)
-        ; permite saber o deslocamento para baixo da peca (overlap de posicoes vazias na peca com posicoes preenchidas no tabuleiro)
-        (setf linha-base (- linha-max (base-peca-coluna peca-array peca-coluna)))
-        ; uma vez descoberta a linha-a-inserir esta nunca pode reduzir o seu valor (colunas anteriores nao o permitem)
-        (if (> linha-base linha-a-inserir)
-          ; assim se a nova linha-base for superior a peca tem de se deslocar para a nova linha-base
-          (setf linha-a-inserir linha-base)))
+	; define linha-max como sendo a linha maxima da coluna a analizar (coluna + coluna da peca)
+	(setf linha-max (tabuleiro-altura-coluna tabuleiro (+ coluna peca-coluna)))
+	; define a linha-base como sendo a diferenca entre a linha-max e a linha mais abaixo da peca (na coluna a analizar)
+	; permite saber o deslocamento para baixo da peca (overlap de posicoes vazias na peca com posicoes preenchidas no tabuleiro)
+	(setf linha-base (- linha-max (base-peca-coluna peca-array peca-coluna)))
+	; uma vez descoberta a linha-a-inserir esta nunca pode reduzir o seu valor (colunas anteriores nao o permitem)
+	(if (> linha-base linha-a-inserir)
+	  ; assim se a nova linha-base for superior a peca tem de se deslocar para a nova linha-base
+	  (setf linha-a-inserir linha-base)))
       ; desenha peca na posicao descoberta
       (desenha-peca-tabuleiro tabuleiro peca-array linha-a-inserir coluna))))
 
@@ -343,10 +343,10 @@
 (defun calcula-pontos (contador)
   "Calcula pontos consoante numero de linhas removido"
   (cond ((= contador 0) 0)
-    ((= contador 1) 100)
-    ((= contador 2) 300)
-    ((= contador 3) 500)
-    ((= contador 4) 800)))
+	((= contador 1) 100)
+	((= contador 2) 300)
+	((= contador 3) 500)
+	((= contador 4) 800)))
 
 ;;; -----------------------------------------------------------
 ;;; Aplica accao num estado
@@ -361,17 +361,19 @@
     (insere-peca (estado-tabuleiro novo-estado) (accao-coluna accao) (accao-peca accao))
     ; atualiza as pecas colocadas do novo-estado
     (setf (estado-pecas-colocadas novo-estado) 
-      (append (list (first (estado-pecas-por-colocar novo-estado))) (estado-pecas-colocadas novo-estado)))
+	  (append (list (first (estado-pecas-por-colocar novo-estado))) (estado-pecas-colocadas novo-estado)))
     ; atualiza pecas-por-colocar no novo estado
     (setf (estado-pecas-por-colocar novo-estado) (rest (estado-pecas-por-colocar novo-estado)))
     ; se nao perder o jogo calcula pontos consoante linhas removidas
-    (if (not (tabuleiro-topo-preenchido-p (estado-tabuleiro novo-estado))) (progn
-      (dotimes (linha *LINHAS*)
-        (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha) (progn
-          (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
-          ; conta linha removida e ajusta iterador
-          (decf linha)(incf contador))))
-      (incf (estado-pontos novo-estado)(calcula-pontos contador))))
+    (if (not (tabuleiro-topo-preenchido-p (estado-tabuleiro novo-estado)))
+      (progn
+	(dotimes (linha *LINHAS*)
+	  (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
+	    (progn
+	      (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
+	      ; conta linha removida e ajusta iterador
+	      (decf linha)(incf contador))))
+	(incf (estado-pontos novo-estado)(calcula-pontos contador))))
     novo-estado))
 
 
@@ -396,15 +398,27 @@
     (dolist (peca (estado-pecas-colocadas estado) max-pontos)
       ; por cada peca incrementa pontos maximos possiveis
       (cond ((equal peca 'i) (incf max-pontos 800))
-        ((or (equal peca 'j)(equal peca 'l)) (incf max-pontos 500))
-        ((or (equal peca 's)(equal peca 'z)(equal peca 't)(equal peca 'o)) (incf max-pontos 300))))
+	    ((or (equal peca 'j)(equal peca 'l)) (incf max-pontos 500))
+	    ((or (equal peca 's)(equal peca 'z)(equal peca 't)(equal peca 'o)) (incf max-pontos 300))))
     ; calcula a diferenca entre pontos possiveis e obtidos
-  (- max-pontos (estado-pontos estado))))
+    (- max-pontos (estado-pontos estado))))
 
- 
+
 ;;; ======================== ;;;
 ;;;         Procuras
 ;;; ======================== ;;;
+
+;;; Depth first search algorithm
+;;; Devolve uma lista de estados comecando no estado inicial passado ate ao estado solucao
+(defun dfs (problema estado)
+  (let ((lista NIL)
+	(accoes (reverse (funcall (problema-accoes problema) estado))))
+    (if (funcall (problema-solucao problema) estado) 
+      (list T)
+      (dolist (accao accoes)
+	(setf lista (dfs problema (funcall (problema-resultado problema) estado accao)))
+	(if (first lista)
+	  (return (append lista (list accao))))))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura uma solucao para resolver o problema (Profundidade primeiro)
@@ -412,20 +426,30 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-pp (problema)
-  (let ((estado (problema-estado-inicial problema))
-  		(lista-estados (list estado)))
-  (loop
-  	(let ((accoes (funcall (problema-accoes problema) estado))
-  		(estado (first (lista-estados))))
-  	(if (not (null accoes))
-  		(progn 
-  			(setf lista-estados (rest lista-estados))
-  			(if (funcall (problema-solucao problema) estado)
-  				(return lista-estados)
-  			(dolist (accao accoes) 
-  				(push lista-estados (funcall (problema-resultado problema) estado accao)))))
-  		(setf lista-estados (rest lista-estados)))))))
+  (reverse (rest (dfs problema (problema-estado-inicial problema)))))
 
+;;; Insere nodes numa lista de forma ordenada pelo custo
+;;;  - lista
+;;;  - node -> estrutura com o conteudo: estado, custo , accoes
+;;; Devolve a nova lista calculada
+(defun insere-elemento (lista node)
+  (let ((lista-a-retornar (list))
+	(lista-a-iterar (copy-list lista)))
+    (loop 
+      (let ((elem (first lista-a-iterar)))
+	; se chegamos ao fim da lista
+	(if (null elem) (return (append lista-a-retornar (list node))))
+	(format T "custo node ~D custo elem ~D     " (node-custo node) (node-custo elem))
+	(if (< (node-custo node) (node-custo elem))
+	  ; then
+	  (progn 
+	    (format T "here~%")
+(return (append lista-a-retornar (list node elem) (rest lista-a-iterar))))
+	  ;else
+	  (progn
+	    (format T "there~%")
+	    (append lista-a-retornar (list elem))
+	    (setf lista-a-iterar (rest lista-a-iterar))))))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
@@ -435,30 +459,33 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-A* (problema heuristica)
-  (let* ((estado (problema-estado-inicial problema))
-	(lista NIL)
-	(infinity 99999999)
-	(menor-custo infinity)
-	(accao-a-escolher)
-	(estado-a-escolher NIL))
-	(loop 
-	  ;;; iterar sobre todos os possiveis estados
-	  (dolist (accao (funcall (problema-accoes problema) estado))
-	    ;;; calcula estdo e custos
-	    (let* ((estado-resultado (funcall (problema-resultado problema) estado accao))
-		   (custo (funcall (problema-custo-caminho problema) estado-resultado))
-		   (custo-total (+ custo (funcall heuristica estado-resultado))))
-			(format T "~D/~D     ~S      ~S~%" custo (estado-pontos estado-resultado) (estado-pecas-colocadas estado-resultado)  accao)
-		   ;;; se custo calculado for minimo escolhemos esse como melhor estado
-		   (if (<= custo-total menor-custo) (progn (setf menor-custo custo) (setf estado-a-escolher estado-resultado)(setf accao-a-escolher accao)))))
-	  ;;; adiciona melhor estado a lista e prepara proxima iteracao caso a heuristica deste estado nao seja 0, se for retorna da funcao
-(format T "------------------------------------~%" (estado-pecas-por-colocar estado-a-escolher))
-	  (setf lista (append lista (list accao-a-escolher)))
-	  (when (and (= (funcall heuristica estado-a-escolher) 0) (funcall (problema-solucao problema) estado-a-escolher))(return lista))
-	  (setf menor-custo infinity)
-	  (setf estado estado-a-escolher))))
-
-
+  ;estados-abertos e uma lista em que cada elemento e uma lista com estado, custo desse estado, e caminho ate esse estado
+  (defstruct node (estado NIL) (custo NIL) (caminho NIL))
+  (let ((lista-estados-abertos (list (make-node :estado (problema-estado-inicial problema) :custo 0 :caminho NIL)))
+	(estado-otimo (make-node :estado NIL :custo 999999 :caminho (list))))
+    (loop
+      ; se nao houver mais estados para analisar retornamos o valor do caminho no estado final
+      (when (null lista-estados-abertos) (return (node-caminho estado-otimo)))
+      ; retira da lista o estado com menor custo (primeiro)
+      (let* ((estado-a-avaliar (first lista-estados-abertos))
+	     (accoes (funcall (problema-accoes problema) (node-estado estado-a-avaliar))))
+	(format T "CUSTO:  ~D   || ACCAO  ~S~%" (node-custo estado-a-avaliar) (node-caminho estado-a-avaliar))
+	; caso seja solucao e heuristica seja 0 ou nao haja accoes
+	(if (or (and (funcall (problema-solucao problema) (node-estado estado-a-avaliar)) (= (funcall heuristica (node-estado estado-a-avaliar)) 0)))
+	    ; then
+	  (if (<= (node-custo estado-a-avaliar) (node-custo estado-otimo))
+	    (setf estado-otimo estado-a-avaliar))
+	    ; else
+	  (if (null accoes)(return NIL)))
+	; remove 1o elemento - estado-a-avaliar
+	(setf lista-estados-abertos (rest lista-estados-abertos))
+	(dolist (accao accoes)
+	  ;descobre novos estados e adiciona-os a lista de abertos
+	  (let* ((estado-resultante (funcall (problema-resultado problema) (node-estado estado-a-avaliar) accao))
+		 (custo  (+ (funcall (problema-custo-caminho problema) estado-resultante) (funcall heuristica estado-resultante))))
+	    ; insere um novo elemento na lista de abertos em que os estado e o resultante da accao, o custo e o calculado para este estado e o caminho contem a accao que originou este estado
+	    (setf lista-estados-abertos (insere-elemento lista-estados-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho estado-a-avaliar) (list accao)))))))))))
+    
 
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
@@ -466,10 +493,7 @@
 ;;;  - lista-pecas -> lista de pecas por colocar 
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
+
 ;;;(defun procura-best (tabuleiro lista-pecas))
 
-
-
-
-
-(load "utils.fas")
+;(load "utils.fas")

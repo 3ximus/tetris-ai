@@ -1,4 +1,0 @@
-(ignore-value (setf estado1 (make-estado :pontos 50 :pecas-por-colocar '(i j) :pecas-colocadas '(z z z) :tabuleiro (cria-tabuleiro-aleatorio 1.0 0.05))))
-(format T "~%Linha 17 Coluna 9 do tabueliro: ~D" (aref (tabuleiro-data (estado-tabuleiro estado1)) 17 9))
-(desenha-estado estado1)
-(estado-tabuleiro estado1)
