@@ -433,23 +433,22 @@
 ;;;  - node -> estrutura com o conteudo: estado, custo , accoes
 ;;; Devolve a nova lista calculada
 (defun insere-elemento (lista node)
-  (let ((lista-a-retornar (list))
-	(lista-a-iterar (copy-list lista)))
+  (let ((lista-a-retornar (list)))
     (loop 
-      (let ((elem (first lista-a-iterar)))
+      (let ((elem (first lista)))
 	; se chegamos ao fim da lista
 	(if (null elem) (return (append lista-a-retornar (list node))))
 	;(format T "custo node ~D custo elem ~D     " (node-custo node) (node-custo elem))
-	(if (< (node-custo node) (node-custo elem))
+	(if (<= (node-custo node) (node-custo elem))
 	  ; then
-	  (progn 
-	    ;(format T "here~%")
-(return (append lista-a-retornar (list node elem) (rest lista-a-iterar))))
+        (return (append lista-a-retornar (list node elem) (rest lista)))
 	  ;else
 	  (progn
 	    ;(format T "there~%")
-	    (append lista-a-retornar (list elem))
-	    (setf lista-a-iterar (rest lista-a-iterar))))))))
+	    (setf lista-a-retornar (append lista-a-retornar (list elem)))
+	    (setf lista (rest lista))))))))
+
+;(defun insere-el )
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
@@ -461,39 +460,130 @@
 (defun procura-A* (problema heuristica)
   ;estados-abertos e uma lista em que cada elemento e uma lista com estado, custo desse estado, e caminho ate esse estado
   (defstruct node (estado NIL) (custo NIL) (caminho NIL))
-  (let ((lista-estados-abertos (list (make-node :estado (problema-estado-inicial problema) :custo 0 :caminho NIL)))
-	(estado-otimo (make-node :estado NIL :custo 999999 :caminho (list))))
+  (let ((lista-nos-abertos (list (make-node :estado (problema-estado-inicial problema) :custo 0 :caminho NIL)))
+	(no-otimo (make-node :estado NIL :custo 999999 :caminho (list))))
     (loop
       ; se nao houver mais estados para analisar retornamos o valor do caminho no estado final
-      (when (null lista-estados-abertos) (return (node-caminho estado-otimo)))
+      (when (null lista-nos-abertos) (return (node-caminho no-otimo)))
       ; retira da lista o estado com menor custo (primeiro)
-      (let* ((estado-a-avaliar (first lista-estados-abertos))
-	     (accoes (funcall (problema-accoes problema) (node-estado estado-a-avaliar))))
-	;(format T "CUSTO:  ~D   || ACCAO  ~S~%" (node-custo estado-a-avaliar) (node-caminho estado-a-avaliar))
+      (let* ((no-a-avaliar (first lista-nos-abertos))
+	     (accoes (funcall (problema-accoes problema) (node-estado no-a-avaliar))))
 	; caso seja solucao e heuristica seja 0 ou nao haja accoes
-	(if (or (and (funcall (problema-solucao problema) (node-estado estado-a-avaliar)) (= (funcall heuristica (node-estado estado-a-avaliar)) 0)))
-	    ; then
-	  (if (<= (node-custo estado-a-avaliar) (node-custo estado-otimo))
-	    (setf estado-otimo estado-a-avaliar))
-	    ; else
-	  (if (null accoes)(return NIL)))
-	; remove 1o elemento - estado-a-avaliar
-	(setf lista-estados-abertos (rest lista-estados-abertos))
+	(if (and (funcall (problema-solucao problema) (node-estado no-a-avaliar)) (<= (node-custo no-a-avaliar) (node-custo no-otimo)))
+	    (setf no-otimo no-a-avaliar))
+	; remove 1o elemento - no-a-avaliar
+	(setf lista-nos-abertos (rest lista-nos-abertos))
+        ;expansao
 	(dolist (accao accoes)
 	  ;descobre novos estados e adiciona-os a lista de abertos
-	  (let* ((estado-resultante (funcall (problema-resultado problema) (node-estado estado-a-avaliar) accao))
+	  (let* ((estado-resultante (funcall (problema-resultado problema) (node-estado no-a-avaliar) accao))
 		 (custo  (+ (funcall (problema-custo-caminho problema) estado-resultante) (funcall heuristica estado-resultante))))
 	    ; insere um novo elemento na lista de abertos em que os estado e o resultante da accao, o custo e o calculado para este estado e o caminho contem a accao que originou este estado
-	    (setf lista-estados-abertos (insere-elemento lista-estados-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho estado-a-avaliar) (list accao)))))))))))
+    ;  (push (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho no-a-avaliar) (list accao))) lista-nos-abertos)
+	    (setf lista-nos-abertos (insere-elemento lista-nos-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho no-a-avaliar) (list accao)))))
+      ))
+  ;(dolist (no lista-nos-abertos) (format T "~D " (node-custo no)))
+  ;(format T "~%-------------------------------~%")
+  ))))
     
-
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
-;;;  - tabuleiro 
+;;;  - array com as posicoes do tabuleiro 
 ;;;  - lista-pecas -> lista de pecas por colocar 
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 
-;;;(defun procura-best (tabuleiro lista-pecas))
+(defun procura-best (array-tab lista-pecas)
+  (let* ((estado (make-estado :pecas-por-colocar lista-pecas :tabuleiro (make-tabuleiro :data array-tab))))
+        (best estado)))
 
-;(load "utils.fas")
+(defun best (estado)
+  (let ((accoes-best nil)
+        (estado-best nil)
+        (estado-a-expandir estado))
+    (loop
+      (let ((max-custo -99999)
+            (lista-accoes nil))
+      (when (solucao estado-a-expandir) (return accoes-best))
+      (dolist (accao (accoes estado-a-expandir))
+        (let* ((estado-corrente (resultado estado-a-expandir accao))
+               (custo-corrente (heuristica (estado-tabuleiro estado-corrente))))
+        (if (< max-custo custo-corrente)
+          (progn
+          (setf max-custo custo-corrente)
+          (push accao lista-accoes)
+          (setf estado-best estado-corrente)))))
+      (push (first lista-accoes) accoes-best)
+      (setf estado-a-expandir estado-best)))))
+
+
+;;; Funcoes heuristicas
+;;; Parametros provinientes do Genetic Algorithm
+;;; Maximizam o numero de linhas completas
+;;; Desta forma e possivel escolher a melhor accao a aplicar, escolhendo o maximo valor possivel desta heuristica
+(defparameter *A* -0.510066)
+(defparameter *B*  0.760666)
+(defparameter *C* -0.35663)
+(defparameter *D* -0.184483)
+
+;;; h-1
+;;; Soma as alturas de um tabuleiro
+;;; - tabuleiro
+;;; Devolve a soma das alturas de cada coluna do tabuleiro
+;;; Queremos minimizar este valor
+(defun soma-alturas (tabuleiro)
+  (let ((soma 0))
+  (dotimes (coluna *COLUNAS* soma)
+    ;(format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna))
+    (setf soma (+ soma (tabuleiro-altura-coluna tabuleiro coluna))))))
+
+;;; h-2
+;;; linhas-completas-tabuleiro
+;;; devolve o numero de linhas completas de um tabuleiro
+;;; Queremos maximizar este valor
+(defun linhas-completas (tabuleiro)
+  (let ((l-completas 0))
+    (dotimes (linha *LINHAS* l-completas)
+      (if (tabuleiro-linha-completa-p tabuleiro linha)
+        (incf l-completas)))))
+
+;;; h-3
+;;; buracos
+;;; devolve o numero de buracos no tabuleiro
+;;; Um buraco e qql posicao vazia sendo que tem pelo menos uma posicao preenchida acimda de si, na mesma coluna.
+;;; Queremos minimizar este valor
+(defun buracos (tabuleiro)
+  (let((buracos 0)
+      (buracos-potenciais 0))
+  (dotimes (coluna *COLUNAS* buracos)
+    (setf buracos-potenciais 0)
+    ;(format T "-------coluna [~D]:------- [RESET] ~%" (+ coluna 1))
+    (dotimes (linha *LINHAS* buracos)
+      ;(format T "linha [~D]: $ " (+ linha 1))
+      (if (not (tabuleiro-preenchido-p tabuleiro linha coluna))
+        (progn
+        ;(format T "incrementou potenciais~%") 
+        (incf buracos-potenciais))
+        (if (not (= buracos-potenciais 0))
+          (progn
+          ;(format T "atualiza buracos~%") 
+          (setf buracos (+ buracos buracos-potenciais))
+          (setf buracos-potenciais 0))))))))
+
+;;; h-4
+;;; bumpiness
+;;; devolve a variacao entre a altura das colunas de um tabuleiro
+;;; Queremos minimizar este valor
+(defun bumpiness (tabuleiro)
+  (let ((soma 0)
+       (diferenca-alturas 0))
+    (dotimes (coluna (- *COLUNAS* 1) soma)
+      (setf diferenca-alturas (abs (- (tabuleiro-altura-coluna tabuleiro coluna) (tabuleiro-altura-coluna tabuleiro (+ coluna 1)))))
+      (setf soma (+ soma diferenca-alturas)))))
+
+;;; qualidade
+;;; A x aggregateHeigth + B x completelines + C x holes + D x bumpiness
+(defun heuristica (tabuleiro)
+  (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
+
+(load "utils.fas")
