@@ -409,14 +409,13 @@
 ;;; ======================== ;;;
 
 ;;; Depth first search algorithm
-;;; Devolve uma lista de estados comecando no estado inicial passado ate ao estado solucao
-(defun dfs (problema estado)
-  (let ((lista NIL)
-	(accoes (reverse (funcall (problema-accoes problema) estado))))
-    (if (funcall (problema-solucao problema) estado) 
+;;; Devolve uma lista de accoes comecando no estado inicial passado ate ao estado solucao
+(defun dfs (problema)
+  (let ((lista NIL))
+    (if (funcall (problema-solucao problema) (problema-estado-inicial problema))
       (list T)
-      (dolist (accao accoes)
-	(setf lista (dfs problema (funcall (problema-resultado problema) estado accao)))
+      (dolist (accao (reverse (funcall (problema-accoes problema) (problema-estado-inicial problema))))
+	(setf lista (dfs (make-problema :estado-inicial (funcall (problema-resultado problema) (problema-estado-inicial problema) accao) :solucao (problema-solucao problema) :accoes (problema-accoes problema) :resultado (problema-resultado problema) :custo-caminho (problema-custo-caminho problema))))
 	(if (first lista)
 	  (return (append lista (list accao))))))))
 
@@ -426,7 +425,7 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 (defun procura-pp (problema)
-  (reverse (rest (dfs problema (problema-estado-inicial problema)))))
+  (reverse (rest (dfs problema))))
 
 ;;; Insere nodes numa lista de forma ordenada pelo custo
 ;;;  - lista
