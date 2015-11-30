@@ -433,16 +433,23 @@
 ;;;  - node -> estrutura com o conteudo: estado, custo , accoes
 ;;; Devolve a nova lista calculada
 (defun insere-elemento (lista node)
-    (let ((lista-a-retornar (list)))
-      (loop 
-	(let ((elem (first lista)))
-	  ; se chegamos ao fim da lista
-	  (if (null elem) (return (append lista-a-retornar (list node))))
-	  (if (< (node-custo node) (node-custo elem))
-	    (return (append lista-a-retornar (list node elem) (rest lista)))
-	    (progn ; else
-	      (append lista-a-retornar (list elem))
-	      (setf lista (rest lista))))))))
+  (let ((lista-a-retornar (list))
+	(lista-a-iterar (copy-list lista)))
+    (loop 
+      (let ((elem (first lista-a-iterar)))
+	; se chegamos ao fim da lista
+	(if (null elem) (return (append lista-a-retornar (list node))))
+	(format T "custo node ~D custo elem ~D     " (node-custo node) (node-custo elem))
+	(if (< (node-custo node) (node-custo elem))
+	  ; then
+	  (progn 
+	    (format T "here~%")
+(return (append lista-a-retornar (list node elem) (rest lista-a-iterar))))
+	  ;else
+	  (progn
+	    (format T "there~%")
+	    (append lista-a-retornar (list elem))
+	    (setf lista-a-iterar (rest lista-a-iterar))))))))
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
@@ -455,26 +462,30 @@
   ;estados-abertos e uma lista em que cada elemento e uma lista com estado, custo desse estado, e caminho ate esse estado
   (defstruct node (estado NIL) (custo NIL) (caminho NIL))
   (let ((lista-estados-abertos (list (make-node :estado (problema-estado-inicial problema) :custo 0 :caminho NIL)))
-	(estado-otimo (make-node :estado NIL :custo 999999 :caminho (list)))
-	(estado-a-avaliar))
+	(estado-otimo (make-node :estado NIL :custo 999999 :caminho (list))))
     (loop
       ; se nao houver mais estados para analisar retornamos o valor do caminho no estado final
       (when (null lista-estados-abertos) (return (node-caminho estado-otimo)))
       ; retira da lista o estado com menor custo (primeiro)
       (let* ((estado-a-avaliar (first lista-estados-abertos))
 	     (accoes (funcall (problema-accoes problema) (node-estado estado-a-avaliar))))
+	(format T "CUSTO:  ~D   || ACCAO  ~S~%" (node-custo estado-a-avaliar) (node-caminho estado-a-avaliar))
 	; caso seja solucao e heuristica seja 0 ou nao haja accoes
-	(if (or (and (funcall (problema-solucao problema) (node-estado estado-a-avaliar)) (= (funcall heuristica (node-estado estado-a-avaliar)) 0)) (null accoes))
+	(if (or (and (funcall (problema-solucao problema) (node-estado estado-a-avaliar)) (= (funcall heuristica (node-estado estado-a-avaliar)) 0)))
+	    ; then
 	  (if (<= (node-custo estado-a-avaliar) (node-custo estado-otimo))
-	    (setf estado-otimo estado-a-avaliar)))
+	    (setf estado-otimo estado-a-avaliar))
+	    ; else
+	  (if (null accoes)(return NIL)))
 	; remove 1o elemento - estado-a-avaliar
 	(setf lista-estados-abertos (rest lista-estados-abertos))
 	(dolist (accao accoes)
 	  ;descobre novos estados e adiciona-os a lista de abertos
 	  (let* ((estado-resultante (funcall (problema-resultado problema) (node-estado estado-a-avaliar) accao))
-		 (custo  (+ (funcall (problema-custo-caminho problema) estado-resultante) (funcall heuristica estado-resultante)))) 
+		 (custo  (+ (funcall (problema-custo-caminho problema) estado-resultante) (funcall heuristica estado-resultante))))
 	    ; insere um novo elemento na lista de abertos em que os estado e o resultante da accao, o custo e o calculado para este estado e o caminho contem a accao que originou este estado
 	    (setf lista-estados-abertos (insere-elemento lista-estados-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho estado-a-avaliar) (list accao)))))))))))
+    
 
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
