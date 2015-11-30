@@ -467,7 +467,7 @@
       (when (null lista-nos-abertos) (return (node-caminho no-otimo)))
       ; retira da lista o estado com menor custo (primeiro)
       (let* ((no-a-avaliar (first lista-nos-abertos))
-	     (accoes (funcall (problema-accoes problema) (node-estado no-a-avaliar))))
+	     (accoes (reverse (funcall (problema-accoes problema) (node-estado no-a-avaliar)))))
 	; caso seja solucao e heuristica seja 0 ou nao haja accoes
 	(if (and (funcall (problema-solucao problema) (node-estado no-a-avaliar)) (<= (node-custo no-a-avaliar) (node-custo no-otimo)))
 	    (setf no-otimo no-a-avaliar))
