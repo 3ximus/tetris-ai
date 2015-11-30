@@ -438,17 +438,13 @@
       (let ((elem (first lista)))
 	; se chegamos ao fim da lista
 	(if (null elem) (return (append lista-a-retornar (list node))))
-	;(format T "custo node ~D custo elem ~D     " (node-custo node) (node-custo elem))
 	(if (<= (node-custo node) (node-custo elem))
 	  ; then
         (return (append lista-a-retornar (list node elem) (rest lista)))
 	  ;else
 	  (progn
-	    ;(format T "there~%")
 	    (setf lista-a-retornar (append lista-a-retornar (list elem)))
 	    (setf lista (rest lista))))))))
-
-;(defun insere-el )
 
 ;;; -----------------------------------------------------------
 ;;; Procura com algoritmo A* para descobrir sequencia de accoes e maximizar os pontos 
@@ -467,10 +463,10 @@
       (when (null lista-nos-abertos) (return (node-caminho no-otimo)))
       ; retira da lista o estado com menor custo (primeiro)
       (let* ((no-a-avaliar (first lista-nos-abertos))
-	     (accoes (reverse (funcall (problema-accoes problema) (node-estado no-a-avaliar)))))
+	     (accoes (funcall (problema-accoes problema) (node-estado no-a-avaliar))))
 	; caso seja solucao e heuristica seja 0 ou nao haja accoes
 	(if (and (funcall (problema-solucao problema) (node-estado no-a-avaliar)) (<= (node-custo no-a-avaliar) (node-custo no-otimo)))
-	    (setf no-otimo no-a-avaliar))
+	    (return (node-caminho no-a-avaliar)))
 	; remove 1o elemento - no-a-avaliar
 	(setf lista-nos-abertos (rest lista-nos-abertos))
         ;expansao
@@ -479,12 +475,7 @@
 	  (let* ((estado-resultante (funcall (problema-resultado problema) (node-estado no-a-avaliar) accao))
 		 (custo  (+ (funcall (problema-custo-caminho problema) estado-resultante) (funcall heuristica estado-resultante))))
 	    ; insere um novo elemento na lista de abertos em que os estado e o resultante da accao, o custo e o calculado para este estado e o caminho contem a accao que originou este estado
-    ;  (push (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho no-a-avaliar) (list accao))) lista-nos-abertos)
-	    (setf lista-nos-abertos (insere-elemento lista-nos-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho no-a-avaliar) (list accao)))))
-      ))
-  ;(dolist (no lista-nos-abertos) (format T "~D " (node-custo no)))
-  ;(format T "~%-------------------------------~%")
-  ))))
+	    (setf lista-nos-abertos (insere-elemento lista-nos-abertos (make-node :estado estado-resultante :custo custo :caminho (append (node-caminho no-a-avaliar) (list accao)))))))))))
     
 ;;; -----------------------------------------------------------
 ;;; Identifica a melhor procura possivel  
