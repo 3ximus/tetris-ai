@@ -55,7 +55,7 @@
 ;;; Copia tabuleiro--
 (defun copia-tabuleiro (tabuleiro)
   "Devolve copia de um tabuleiro"
-  (make-tabuleiro :data (tabuleiro->array tabuleiro)))
+  (make-tabuleiro :data (funcall #'tabuleiro->array tabuleiro)))
 
 ;;; --------------------------------------------
 ;;; Verifica se a posicao (linha coluna) esta preenchida.
@@ -69,7 +69,7 @@
 (defun tabuleiro-altura-coluna (tabuleiro coluna)
   (let ((max 0))
     (do* ((n (- *LINHAS* 1) (- n 1))) ((or (not (= max 0)) (= n -1)))
-      (if (tabuleiro-preenchido-p tabuleiro n coluna)
+      (if (funcall #'tabuleiro-preenchido-p tabuleiro n coluna)
 	(setf max (+ n 1))))
     max))
 
@@ -78,7 +78,7 @@
 ;;;  --------------------------------------------
 (defun tabuleiro-linha-completa-p (tabuleiro linha)
   (dotimes (coluna *COLUNAS* T)
-    (when (equal (tabuleiro-preenchido-p tabuleiro linha coluna) NIL)
+    (when (equal (funcall #'tabuleiro-preenchido-p tabuleiro linha coluna) NIL)
       (return NIL))))
 
 ;;; --------------------------------------------
@@ -96,7 +96,7 @@
   (do ((n linha (+ n 1))) ((= n (- *LINHAS* 1)))
     (dotimes (coluna *COLUNAS* T)
       (setf (aref (tabuleiro-data tab) n coluna) (aref (tabuleiro-data tab) (+ n 1) coluna))))
-  (tabuleiro-linha-vazia tab (- *LINHAS* 1)))
+  (funcall #'tabuleiro-linha-vazia tab (- *LINHAS* 1)))
 
 ;;; --------------------------------------------
 ;;; Coloca todas as posicoes da (linha) vazias.
@@ -163,7 +163,7 @@
 ;;; ======================== ;;;
 
 ;;; Estrutura do tipo estado
-(defstruct estado (pontos 0) (pecas-por-colocar nil) (pecas-colocadas nil) (tabuleiro (cria-tabuleiro)))
+(defstruct estado (pontos 0) (pecas-por-colocar nil) (pecas-colocadas nil) (tabuleiro (funcall #'cria-tabuleiro)))
 
 ;;; -----------------------------------------------------------
 ;;; Copia um estado
@@ -183,7 +183,7 @@
   (if (and (= (estado-pontos estado-incial) (estado-pontos estado-final))
 	   (equal (estado-pecas-por-colocar estado-incial) (estado-pecas-por-colocar estado-final))
 	   (equal (estado-pecas-colocadas estado-incial) (estado-pecas-colocadas estado-final))
-	   (tabuleiros-iguais-p (estado-tabuleiro estado-incial) (estado-tabuleiro estado-final)))
+	   (funcall #'tabuleiros-iguais-p (estado-tabuleiro estado-incial) (estado-tabuleiro estado-final)))
     T
     NIL))
 
@@ -192,7 +192,7 @@
 ;;; -----------------------------------------------------------
 (defun estado-final-p (estado)
   "Verifica se estado e um estado final de um jogo"
-  (if (or (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
+  (if (or (funcall #'tabuleiro-topo-preenchido-p (estado-tabuleiro estado))
 	  (null (estado-pecas-por-colocar estado)))
     T
     NIL))
@@ -221,7 +221,7 @@
 ;;; --------------------------------------------
 (defun solucao (estado)
   "Indica se um estado corresponde a uma solucao"
-  (if (and (null (estado-pecas-por-colocar estado)) (null (tabuleiro-topo-preenchido-p (estado-tabuleiro estado))))
+  (if (and (null (estado-pecas-por-colocar estado)) (null (funcall #'tabuleiro-topo-preenchido-p (estado-tabuleiro estado))))
     T NIL))
 
 ;;; Verifica jogada valida
@@ -276,7 +276,7 @@
 ;;; --------------------------------------------
 (defun accoes (estado)
   "Compoe a lista de accoes possiveis"
-  (if (tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL
+  (if (funcall #'tabuleiro-topo-preenchido-p (estado-tabuleiro estado)) NIL
     (let ((lista-accoes NIL) (peca (first (estado-pecas-por-colocar estado))) (max-rotacao 0))
       ; define as rotacoes maximas possiveis de aplicar na peca (0 defualt)
       (cond ((or (equal peca 'i)(equal peca 's)(equal peca 'z)) (setf max-rotacao 1))
@@ -300,8 +300,8 @@
       (if (and (valida-linha (+ peca-linha linha)) (aref peca-array peca-linha peca-coluna))
 	(progn
 	  ; insere a peca segundo offset calculado
-	  (setf (aref (tabuleiro-data tabuleiro) (+ linha peca-linha) (+ coluna peca-coluna))
-		(aref peca-array peca-linha peca-coluna)))))))
+	  (funcall #'tabuleiro-preenche! tabuleiro (+ linha peca-linha) (+ coluna peca-coluna))
+		(aref peca-array peca-linha peca-coluna))))))
 
 
 ;;; Descobre base de uma coluna de uma peca
@@ -326,7 +326,7 @@
       ; percorre as varias colunas de uma peca
       (dotimes (peca-coluna (array-dimension peca-array 1))
 	; define linha-max como sendo a linha maxima da coluna a analizar (coluna + coluna da peca)
-	(setf linha-max (tabuleiro-altura-coluna tabuleiro (+ coluna peca-coluna)))
+	(setf linha-max (funcall #'tabuleiro-altura-coluna tabuleiro (+ coluna peca-coluna)))
 	; define a linha-base como sendo a diferenca entre a linha-max e a linha mais abaixo da peca (na coluna a analizar)
 	; permite saber o deslocamento para baixo da peca (overlap de posicoes vazias na peca com posicoes preenchidas no tabuleiro)
 	(setf linha-base (- linha-max (base-peca-coluna peca-array peca-coluna)))
@@ -365,12 +365,12 @@
     ; atualiza pecas-por-colocar no novo estado
     (setf (estado-pecas-por-colocar novo-estado) (rest (estado-pecas-por-colocar novo-estado)))
     ; se nao perder o jogo calcula pontos consoante linhas removidas
-    (if (not (tabuleiro-topo-preenchido-p (estado-tabuleiro novo-estado)))
+    (if (not (funcall #'tabuleiro-topo-preenchido-p (estado-tabuleiro novo-estado)))
       (progn
 	(dotimes (linha *LINHAS*)
-	  (if (tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
+	  (if (funcall #'tabuleiro-linha-completa-p (estado-tabuleiro novo-estado) linha)
 	    (progn
-	      (tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
+	      (funcall #'tabuleiro-remove-linha! (estado-tabuleiro novo-estado) linha)
 	      ; conta linha removida e ajusta iterador
 	      (decf linha)(incf contador))))
 	(incf (estado-pontos novo-estado)(calcula-pontos contador))))
@@ -524,8 +524,7 @@
 (defun soma-alturas (tabuleiro)
   (let ((soma 0))
   (dotimes (coluna *COLUNAS* soma)
-    ;(format T "coluna [~D]: ~D~%" (+ coluna 1) (tabuleiro-altura-coluna tabuleiro coluna))
-    (setf soma (+ soma (tabuleiro-altura-coluna tabuleiro coluna))))))
+    (setf soma (+ soma (funcall #'tabuleiro-altura-coluna tabuleiro coluna))))))
 
 ;;; h-2
 ;;; linhas-completas-tabuleiro
@@ -534,7 +533,7 @@
 (defun linhas-completas (tabuleiro)
   (let ((l-completas 0))
     (dotimes (linha *LINHAS* l-completas)
-      (if (tabuleiro-linha-completa-p tabuleiro linha)
+      (if (funcall #'tabuleiro-linha-completa-p tabuleiro linha)
         (incf l-completas)))))
 
 ;;; h-3
@@ -550,7 +549,7 @@
     ;(format T "-------coluna [~D]:------- [RESET] ~%" (+ coluna 1))
     (dotimes (linha *LINHAS* buracos)
       ;(format T "linha [~D]: $ " (+ linha 1))
-      (if (not (tabuleiro-preenchido-p tabuleiro linha coluna))
+      (if (not (funcall #'tabuleiro-preenchido-p tabuleiro linha coluna))
         (progn
         ;(format T "incrementou potenciais~%") 
         (incf buracos-potenciais))
@@ -568,7 +567,7 @@
   (let ((soma 0)
        (diferenca-alturas 0))
     (dotimes (coluna (- *COLUNAS* 1) soma)
-      (setf diferenca-alturas (abs (- (tabuleiro-altura-coluna tabuleiro coluna) (tabuleiro-altura-coluna tabuleiro (+ coluna 1)))))
+      (setf diferenca-alturas (abs (- (funcall #'tabuleiro-altura-coluna tabuleiro coluna) (funcall #'tabuleiro-altura-coluna tabuleiro (+ coluna 1)))))
       (setf soma (+ soma diferenca-alturas)))))
 
 ;;; qualidade
