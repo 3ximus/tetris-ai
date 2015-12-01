@@ -9,3 +9,8 @@ echo "diff test24 outputs"
 diff test25/output test25/output.txt
 echo "diff test25 outputs"
 diff test25/output test25/output.txt
+echo "Filtering stats.........."
+tail -n +23 test24/stats.txt > test24/FilteredStats.txt
+rm test24/stats.txt
+tail -n +23 test25/stats.txt > test25/FilteredStats.txt
+rm test25/stats.txt
