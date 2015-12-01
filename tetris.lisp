@@ -483,18 +483,24 @@
 ;;; Devolve uma sequencia de accoes em que (do inicio para o fim) representam uma solucao do problema 
 ;;; -----------------------------------------------------------
 
-(defun procura-best (array-tab lista-pecas)
+(defun procura-best (array-tab lista-pecas &optional output)
   (let* ((estado (make-estado :pecas-por-colocar lista-pecas :tabuleiro (make-tabuleiro :data array-tab))))
-        (best estado)))
+        (best estado output)))
 
-(defun best (estado)
+(defun best (estado output)
   (let ((accoes-best nil)
         (estado-best nil)
         (estado-a-expandir estado))
     (loop
       (let ((max-custo -99999)
             (lista-accoes nil))
-      (when (solucao estado-a-expandir) (return accoes-best))
+      (when (solucao estado-a-expandir) 
+        (progn
+          (if (null output )
+            (progn
+              (format T "---------------~%| Pontos: ~D |~%---------------~%~%" (estado-pontos estado-a-expandir))
+              (format T "----------------------~%| Search Statistics  |~%----------------------~%")))
+          (return accoes-best)))
       (dolist (accao (accoes estado-a-expandir))
         (let* ((estado-corrente (resultado estado-a-expandir accao))
                (custo-corrente (heuristica (estado-tabuleiro estado-corrente))))
