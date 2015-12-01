@@ -575,4 +575,4 @@
 (defun heuristica (tabuleiro)
   (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
 
-(load "utils.fas")
+;(load "utils.fas")

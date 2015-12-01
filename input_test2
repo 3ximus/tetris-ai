@@ -1,8 +1,0 @@
-(ignore-value (setf t1 (cria-tabuleiro)))
-;(ignore-value (dotimes (linha 17) (dotimes (coluna 9) (tabuleiro-preenche! t1 linha coluna))))
-(ignore-value (tabuleiro-preenche! t1 0 2))
-(ignore-value (tabuleiro-preenche! t1 16 2))
-(setf estado1 (make-estado :pontos 0 :tabuleiro t1 :pecas-colocadas () :pecas-por-colocar '(t s)))
-(accoes estado1) 
-(desenha-estado estado1)
-
