@@ -33,8 +33,4 @@ tail -n +23 test25/stats.txt > test25/FilteredStats.txt # Test25
 
 # Apaga ficheiros stats.txt de cada teste.
 # Ficheiro stat.txt tem o output produzido pelo clisp
-rm test01/stats.txt
-rm test02/stats.txt
-rm test03/stats.txt
-rm test24/stats.txt
-rm test25/stats.txt
+find . -name "stats.txt" -type f -delete
