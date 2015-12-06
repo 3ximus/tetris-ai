@@ -576,9 +576,50 @@
       (setf diferenca-alturas (abs (- (tabuleiro-altura-coluna tabuleiro coluna) (tabuleiro-altura-coluna tabuleiro (+ coluna 1)))))
       (setf soma (+ soma diferenca-alturas)))))
 
+;;; h-5
+;;; Devolve a altura maxima de uma celula preenchida num tabuleiro
+(defun altura-maxima (tabuleiro)
+  (let ((altura-max 0))
+    (dotimes (coluna *COLUNAS* altura-max)
+      (let ((altura (tabuleiro-altura-coluna tabuleiro coluna)))
+      (if(> altura altura-max) 
+        (setf altura-max altura))))))
+
+;;; h-6
+;;; Devolve numeros de celulas preenchidas no tabuleiro
+;;; Para se encontrar uma linha vazia ou se chegar ao topo do tabuleiro
+(defun celulas-preenchidas (tabuleiro)
+  (let ((posicoes_preenchidas 0))
+    (dotimes (linha *LINHAS* posicoes_preenchidas)
+      (if (tabuleiro-linha-vazia tabuleiro linha)
+        (return posicoes_preenchidas) 
+        (dotimes (coluna *COLUNAS*)
+          (if(tabuleiro-preenchido-p tabuleiro linha coluna)
+            (incf posicoes_preenchidas)))))))
+
+;;; Verifica se um tabuleiro possui (linha) vazia
+(defun tabuleiro-linha-vazia-p (tabuleiro linha)
+  ;; Boleano que indica se uma linha tem pelo menos uma posicao preenchida
+  (let ((linha_preenchida NIL))
+  ;; Se encontrar uma posicao preenchida 
+  ;; termina o ciclo e coloca linha_preenchida a True
+  (dotimes (coluna *COLUNAS*)
+    (if (tabuleiro-preenchido-p tabuleiro linha coluna)
+      (progn
+        (setf linha_preenchida T)
+        (return))))
+  ;; Se a linha possuir uma posicao preeenchida
+  ;; retorna nil, else retorna true.
+  (if (equal linha_preenchida T) 
+    NIL 
+    T)))
+
+
 ;;; qualidade
 ;;; A x aggregateHeigth + B x completelines + C x holes + D x bumpiness
 (defun heuristica (tabuleiro)
   (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
+
+
 
 ;(load "utils.fas")
