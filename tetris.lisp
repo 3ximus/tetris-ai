@@ -577,6 +577,16 @@
       (setf soma (+ soma diferenca-alturas)))))
 
 ;;; h-5
+;;; max-bumpiness
+;;; devolve o valor maximo da varia de altura entre colunas
+(defun maximo-bumpiness (tabuleiro)
+  (let ((max-dif-alturas 0))
+  (dotimes (coluna (- *COLUNAS* 1) max-dif-alturas)
+    (let ((dif-alturas (abs (- (tabuleiro-altura-coluna tabuleiro coluna) (tabuleiro-altura-coluna tabuleiro (+ coluna 1))))))
+    (if (> dif-alturas max-dif-alturas)
+      (setf max-dif-alturas dif-alturas))))))
+
+;;; h-6
 ;;; Devolve a altura maxima de uma celula preenchida num tabuleiro
 (defun altura-maxima (tabuleiro)
   (let ((altura-max 0))
@@ -585,7 +595,7 @@
       (if(> altura altura-max) 
         (setf altura-max altura))))))
 
-;;; h-6
+;;; h-7
 ;;; Devolve numeros de celulas preenchidas no tabuleiro
 ;;; Para se encontrar uma linha vazia ou se chegar ao topo do tabuleiro
 (defun celulas-preenchidas (tabuleiro)
@@ -596,6 +606,8 @@
         (dotimes (coluna *COLUNAS*)
           (if(tabuleiro-preenchido-p tabuleiro linha coluna)
             (incf posicoes_preenchidas)))))))
+
+
 
 ;;; Verifica se um tabuleiro possui (linha) vazia
 (defun tabuleiro-linha-vazia-p (tabuleiro linha)
@@ -619,7 +631,6 @@
 ;;; A x aggregateHeight + B x completelines + C x holes + D x bumpiness
 (defun heuristica (tabuleiro)
   (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
-
 
 
 ;(load "utils.fas")
