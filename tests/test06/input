@@ -1,13 +1,12 @@
 ;; Test06
-
-;;deve retornar IGNORE
 (ignore-value (setf t1 (cria-tabuleiro)))
+(ignore-value (setf lista-pecas '(l i s o l)))
 
 ;;deve retornar IGNORE
-(time (procura-best (tabuleiro-data t1) '(j s j o j l)))
+(time (procura-best (tabuleiro-data t1) lista-pecas))
 
-(with-open-file (str "test06/output.txt"
+(with-open-file (str "tests/test06/output.txt"
                      :direction :output
                      :if-exists :supersede
                      :if-does-not-exist :create)
-(format str "~S~%" (procura-best (tabuleiro-data t1) '(j s j o j l) 'IGNORE)))
+(format str "~S~%" (procura-best (tabuleiro-data t1) lista-pecas 'IGNORE)))

@@ -1,0 +1,7 @@
+((4 . #2A((NIL T) (T T) (T NIL))) (2 . #2A((NIL T) (NIL T) (T T)))
+ (0 . #2A((T T) (T T))) (2 . #2A((T T) (T NIL) (T NIL))) (3 . #2A((T T) (T T)))
+ (5 . #2A((T NIL NIL) (T T T))) (2 . #2A((T T) (T NIL) (T NIL)))
+ (7 . #2A((T T) (NIL T) (NIL T))) (6 . #2A((T T T) (T NIL NIL)))
+ (3 . #2A((T T T) (NIL T NIL))) (9 . #2A((T) (T) (T) (T)))
+ (0 . #2A((T T) (T T))) (0 . #2A((T T) (T T))) (0 . #2A((T T) (T T)))
+ (5 . #2A((T T T T))) (2 . #2A((T T T) (T NIL NIL))) (0 . #2A((T T) (T T))))
