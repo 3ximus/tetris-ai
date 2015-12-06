@@ -632,5 +632,12 @@
 (defun heuristica (tabuleiro)
   (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
 
+;;; Nova-heuristica
+;;; Testar
+(defun heuristica-1 (tabuleiro)
+  (+ (* -20 (buracos tabuleiro)) (altura-maxima tabuleiro) 
+     (celulas-preenchidas tabuleiro) (soma-alturas tabuleiro) 
+     (bumpiness tabuleiro) (maximo-bumpiness tabuleiro))) 
+
 
 ;(load "utils.fas")
