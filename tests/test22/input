@@ -1,0 +1,13 @@
+;; Test22
+
+;;deve retornar IGNORE
+(ignore-value (setf t1 (cria-tabuleiro)))
+
+;;deve retornar IGNORE
+(time (procura-best (tabuleiro-data t1) '(o s j s o o t i j t j z z z z o j s l j t l)))
+
+(with-open-file (str "test22/output.txt"
+                     :direction :output
+                     :if-exists :supersede
+                     :if-does-not-exist :create)
+(format str "~S~%" (procura-best (tabuleiro-data t1) '(o s j s o o t i j t j z z z z o j s l j t l) 'IGNORE)))

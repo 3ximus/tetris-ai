@@ -1,16 +1,13 @@
 ;; Test01
-;; tabuleiro semi-preenchido
 
 ;;deve retornar IGNORE
 (ignore-value (setf t1 (cria-tabuleiro)))
 
 ;;deve retornar IGNORE
-(ignore-value (dotimes (linha 16) (dotimes (coluna 7) (tabuleiro-preenche! t1 linha coluna))))
-
-(time (procura-best (tabuleiro-data t1) '(o o j l i s)))
+(time (procura-best (tabuleiro-data t1) '(l)))
 
 (with-open-file (str "test01/output.txt"
                      :direction :output
                      :if-exists :supersede
                      :if-does-not-exist :create)
-(format str "~S~%" (procura-best (tabuleiro-data t1) '(o o j l i s) 'IGNORE)))
+(format str "~S~%" (procura-best (tabuleiro-data t1) '(l) 'IGNORE)))
