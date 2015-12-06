@@ -616,7 +616,7 @@
 
 
 ;;; qualidade
-;;; A x aggregateHeigth + B x completelines + C x holes + D x bumpiness
+;;; A x aggregateHeight + B x completelines + C x holes + D x bumpiness
 (defun heuristica (tabuleiro)
   (+ (* *A* (soma-alturas tabuleiro)) (* *B* (linhas-completas tabuleiro)) (* *C* (buracos tabuleiro)) (* *D* (bumpiness tabuleiro))))
 
