@@ -413,7 +413,9 @@
 (defun dfs (problema)
   (let ((lista NIL))
     (if (funcall (problema-solucao problema) (problema-estado-inicial problema))
-      (list T)
+      (progn
+      (format T "Pontos: ~D~%" (estado-pontos (problema-estado-inicial problema)))  
+      (list T))
       (dolist (accao (reverse (funcall (problema-accoes problema) (problema-estado-inicial problema))))
 	(setf lista (dfs (make-problema :estado-inicial (funcall (problema-resultado problema) (problema-estado-inicial problema) accao) :solucao (problema-solucao problema) :accoes (problema-accoes problema) :resultado (problema-resultado problema) :custo-caminho (problema-custo-caminho problema))))
 	(if (first lista)
@@ -503,7 +505,7 @@
           (return accoes-best)))
       (dolist (accao (accoes estado-a-expandir))
         (let* ((estado-corrente (resultado estado-a-expandir accao))
-               (custo-corrente (heuristica (estado-tabuleiro estado-corrente))))
+               (custo-corrente (heuristica-1 (estado-tabuleiro estado-corrente))))
         (if (< max-custo custo-corrente)
           (progn
           (setf max-custo custo-corrente)
@@ -636,9 +638,7 @@
 ;;; Apenas tem caracteristicas negativas
 ;;; Quanto mais buracos tem o tabuleiro pior e (enfase desta heuristica)
 (defun heuristica-1 (tabuleiro)
-  (+ (* -20 (buracos tabuleiro)) (altura-maxima tabuleiro) 
-     (celulas-preenchidas tabuleiro) (soma-alturas tabuleiro) 
-     (bumpiness tabuleiro) (maximo-bumpiness tabuleiro))) 
+  (+ (* -1 (soma-alturas tabuleiro)) (* 20 (linhas-completas tabuleiro)) (* -10 (buracos tabuleiro)) (* -1 (bumpiness tabuleiro))))
 
 
 ;(load "utils.fas")

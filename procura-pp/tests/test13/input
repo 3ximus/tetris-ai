@@ -1,0 +1,13 @@
+;; Test13
+(ignore-value (setf t1 (cria-tabuleiro)))
+(ignore-value (setf lista-pecas '(l z s s j z t l i i z j t)))
+
+(ignore-value (setf p1
+	(make-problema :estado-inicial (make-estado :tabuleiro t1 :pecas-por-colocar lista-pecas)
+				   :solucao #'solucao
+				   :accoes #'accoes
+				   :resultado #'resultado
+				   :custo-caminho #'custo-oportunidade)))
+
+;; Retorna o tempo
+(time (procura-pp p1))
